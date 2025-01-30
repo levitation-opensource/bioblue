@@ -1,4 +1,4 @@
-# Biologically and economically aligned multi-objective multi-agent AI safety benchmarks with simplified observation format
+# BIoBlue: Biologically and economically aligned multi-objective multi-agent AI safety benchmarks with simplified observation format
 
 Developing safe agentic AI systems benefits from automated empirical testing that conforms with human values, a subfield that is largely underdeveloped at the moment. To contribute towards this topic, present work focuses on introducing biologically and economically motivated themes that have been neglected in the safety aspects of modern reinforcement learning literature, namely homeostasis, balancing multiple objectives, bounded objectives, diminishing returns, sustainability, and multi-agent resource sharing. We implemented TODO main benchmark environments on the above themes, for illustrating the potential shortcomings of current mainstream discussions on AI safety.
 
@@ -89,7 +89,7 @@ This project is licensed under the Mozilla Public License 2.0. You are free to u
 
 **Attribution Requirement**: If you use this benchmark suite, please cite the source as follows:
 
-Roland Pihlakas, Shruti Datta Gupta, Sruthi Kuriakose. BioBlue: Biologically and economically aligned multi-objective multi-agent AI safety benchmarks. Jan-Feb 2025 (https://github.com/levitation-opensource/bioblue).
+Roland Pihlakas, Shruti Datta Gupta, Sruthi Kuriakose. BioBlue: Biologically and economically aligned multi-objective multi-agent AI safety benchmarks with simplified observation format. Jan-Feb 2025 (https://github.com/levitation-opensource/bioblue).
 
 **Use of Entire Suite**: We encourage the inclusion of the entire benchmark suite in derivative works to maintain the integrity and comprehensiveness of AI safety assessments.
 
