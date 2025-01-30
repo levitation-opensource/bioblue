@@ -14,7 +14,7 @@ This readme contains instructions for both Linux and Windows installation. Windo
 
 ### Installation under Linux
 
-The project installation is managed via `make` and `pip`. Please see the respective commands in the `Makefile`. To setup the environment follow these steps:
+To setup the environment follow these steps:
 
 1. Install CPython. The code is tested with Python version 3.10.10. We do not recommend using Conda package manager. 
 
