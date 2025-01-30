@@ -68,6 +68,7 @@ You can download the latest installer from https://www.python.org/downloads/rele
 
 Run 
 <br>`python Sustainability.py`
+<br>`python Homeostasis.py`
 
 
 # Inspiration

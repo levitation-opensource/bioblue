@@ -380,5 +380,5 @@ def run_llm_completion_uncached(
 
 def extract_int_from_text(text):
 
-  result = int(''.join(c for c in text if c.isdigit()))
+  result = int(''.join(c for c in text if c.isdigit() or c == "-"))
   return result
