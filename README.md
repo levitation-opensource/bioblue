@@ -34,7 +34,7 @@ Under Linux, run the following commands:
 
 3. Create a virtual python environment:
 
-`make venv-310`
+`python3.10 -m venv_bioblue`
 <br>`source venv_bioblue/bin/activate`
 
 4. Install dependencies by running:
