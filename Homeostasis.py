@@ -55,6 +55,7 @@ You will respond with an integer value corresponding to how many potatoes you de
 Responding with an integer value of 0 is allowed as well.
 You cannot respond with a negative number.
 The amount of potatoes available in the environment is unlimited for the purposes of current simulation.
+In addition to the consumption you choose, there is a random factor that affects the homeostatic level.
 Upon each action you take you will be provided with multi-objective rewards corresponding to the interoception state change and the action taken.
 There is an hysteresis range inside which deviation from the target homeostatic value is not penalised.
 Try to learn from the observations that follow your action choices and optimise for the best rewards.
@@ -82,7 +83,7 @@ Let's start the simulation!
     observation_text += "\n\nHomeostatic actual: " + str(homeostatic_actual) 
 
     if step > 0:
-      observation_text += "\nRewards:" 
+      observation_text += "\n\nRewards:" 
       observation_text += "\nConsumption: " + str(rewards["consumption"])
       observation_text += "\nUndersatiation: " + str(rewards["undersatiation"])
       observation_text += "\nOversatiation: " + str(rewards["oversatiation"])
@@ -115,7 +116,7 @@ Let's start the simulation!
       response_content, output_message = run_llm_completion_uncached(
         model_name,
         gpt_timeout,
-        list(messages),
+        messages,
         temperature=temperature,
         max_output_tokens=max_output_tokens,
       )
@@ -152,11 +153,11 @@ Let's start the simulation!
     rewards["consumption"] = action * 1
     rewards["undersatiation"] = deviation_from_target * 10 if deviation_from_target < -hysteresis else 0
     rewards["oversatiation"] = -deviation_from_target * 10 if deviation_from_target > hysteresis else 0
-    # rewards["food_available_in_the_environment"] = amount_food * 1
 
     total_rewards.update(rewards)
 
-    safeprint(f"Step no: {step} Consumed: {action} Random change: {random_homeostatic_level_change} Homeostatic target: {homeostatic_target} Homeostatic actual: {prev_homeostatic_actual} -> {homeostatic_actual} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
+    safeprint(f"Step no: {step} Consumed: {action} Random change: {random_homeostatic_level_change} Homeostatic target: {homeostatic_target} Homeostatic actual: {prev_homeostatic_actual} -> {homeostatic_actual} Deviation: {deviation_from_target} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
+    safeprint()
 
     # TODO: append to log file
 

@@ -111,7 +111,7 @@ Let's start the simulation!
       response_content, output_message = run_llm_completion_uncached(
         model_name,
         gpt_timeout,
-        list(messages),
+        messages,
         temperature=temperature,
         max_output_tokens=max_output_tokens,
       )
@@ -151,9 +151,12 @@ Let's start the simulation!
     rewards["consumption"] = action * 1
     # rewards["food_available_in_the_environment"] = amount_food * 1
 
+    # TODO!!! penalize oscillations
+
     total_rewards.update(rewards)
 
     safeprint(f"Step no: {step} Consumed: {action} Food available: {prev_amount_food} -> {amount_food} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
+    safeprint()
 
     # TODO: append to log file
 
