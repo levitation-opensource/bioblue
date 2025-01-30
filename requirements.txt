@@ -1,0 +1,4 @@
+json-tricks==3.17.1
+openai==1.45.0
+tenacity==8.2.2
+tiktoken==0.7.0
