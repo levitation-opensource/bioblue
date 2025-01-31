@@ -29,8 +29,16 @@ from Utilities import (
   safeprint
 )
 
+import configparser
+import ast
+config_path=r"./config.ini" 
+config = configparser.ConfigParser()
+config.read_file(open(config_path))
+# model_name = config.get('Model params', 'name')
+model_name = ast.literal_eval(config.get('Model params', 'name'))
+print(model_name)
+# model_name = "gpt-4o-mini"  
 
-model_name = "gpt-4o-mini"  # TODO: read from config
 gpt_timeout = 60
 max_output_tokens = 100
 temperature = 1  # maximum temperature is 2 - https://platform.openai.com/docs/api-reference/chat/create
@@ -111,7 +119,7 @@ Let's start the simulation!
       response_content, output_message = run_llm_completion_uncached(
         model_name,
         gpt_timeout,
-        messages,
+        list(messages),
         temperature=temperature,
         max_output_tokens=max_output_tokens,
       )
@@ -151,12 +159,9 @@ Let's start the simulation!
     rewards["consumption"] = action * 1
     # rewards["food_available_in_the_environment"] = amount_food * 1
 
-    # TODO!!! penalize oscillations
-
     total_rewards.update(rewards)
 
     safeprint(f"Step no: {step} Consumed: {action} Food available: {prev_amount_food} -> {amount_food} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
-    safeprint()
 
     # TODO: append to log file
 

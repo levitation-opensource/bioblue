@@ -17,19 +17,45 @@ import json
 import json_tricks
 
 from openai import OpenAI
+from anthropic import Anthropic
 
 from Utilities import Timer, wait_for_enter
 
+from dotenv import load_dotenv
+load_dotenv()  # Load variables from .env file
 
-client = (
-  OpenAI(
-    api_key=os.environ.get(
-      "OPENAI_API_KEY"
-    ),  # This is the default and can be omitted
-  )
-  if os.environ.get("OPENAI_API_KEY")
-  else None  # this file is always loaded by agents/__init__.py even when it is actually not used. But OpenAI class would throw if it gets unset API key.
-)
+
+import configparser
+import ast
+
+config_path=r"./config.ini" 
+config = configparser.ConfigParser()
+config.read_file(open(config_path))
+
+model_name = ast.literal_eval(config.get('Model params', 'name'))
+
+# Initialize the appropriate client based on the model name
+if model_name.lower().startswith('claude'):
+    from anthropic import Anthropic  
+    claude_client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    print("Initialized Claude client")
+elif model_name.lower().startswith('gpt'):
+    from openai import OpenAI  
+    openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    print("Initialized OpenAI client")
+else:
+    print(f"Unsupported model: {model_name}")
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# client = (
+#   OpenAI(
+#     api_key=os.environ.get(
+#       "OPENAI_API_KEY"
+#     ),  # This is the default and can be omitted
+#   )
+#   if os.environ.get("OPENAI_API_KEY")
+#   else None  # this file is always loaded by agents/__init__.py even when it is actually not used. But OpenAI class would throw if it gets unset API key.
+# )
 
 
 ## https://platform.openai.com/docs/guides/rate-limits/error-mitigation
@@ -39,7 +65,7 @@ client = (
   stop=tenacity.stop_after_attempt(10),
 )  # TODO: config parameters
 def completion_with_backoff(
-  gpt_timeout, **kwargs
+  gpt_timeout,**kwargs
 ):  # TODO: ensure that only HTTP 429 is handled here
   # return openai.ChatCompletion.create(**kwargs)
 
@@ -53,43 +79,67 @@ def completion_with_backoff(
     # print(f"Sending OpenAI API request... Using timeout: {timeout} seconds")
 
     # TODO!!! support for other LLM API-s
+    is_claude = any(kwargs['model'].startswith(prefix) for prefix in ['claude-'])
+    if is_claude:
+        messages = kwargs.pop('messages', [])
+        system_message = next((msg['content'] for msg in messages if msg['role'] == 'system'), None)
+        
+        # Build the messages for Claude
+        claude_messages = []
+        for msg in messages:
+            if msg['role'] != 'system':  # Skip system messages as they're handled separately
+                claude_messages.append({
+                    'role': 'assistant' if msg['role'] == 'assistant' else 'user',
+                    'content': msg['content']
+                })
+        response = claude_client.messages.create(
+                model=kwargs['model'],
+                system=system_message,
+                messages=claude_messages,
+                max_tokens=kwargs.get('max_tokens', 1024),
+                temperature=kwargs.get('temperature', 0)
+            )
+        return (response.content[0].text, response.stop_reason)
+    else:
+
     # TODO!!! support for local LLM-s
     #
 
-    # set openai internal max_retries to 1 so that we can log errors to console
-    openai_response = client.with_options(
-      timeout=gpt_timeout, max_retries=1
-    ).with_raw_response.chat.completions.create(**kwargs)
+      # set openai internal max_retries to 1 so that we can log errors to console
+      openai_response = openai_client.with_options(
+        timeout=gpt_timeout, max_retries=1
+      ).with_raw_response.chat.completions.create(**kwargs)
+      
 
-    # print("Done OpenAI API request.")
+      # print("Done OpenAI API request.")
 
-    openai_response = json_tricks.loads(
-      openai_response.content.decode("utf-8", "ignore")
-    )
+      openai_response = json_tricks.loads(
+        openai_response.content.decode("utf-8", "ignore")
+      )
 
-    if openai_response.get("error"):
-      if (
-        openai_response["error"]["code"] == 502
-        or openai_response["error"]["code"] == 503
-      ):  # Bad gateway or Service Unavailable
-        raise httpcore.NetworkError(openai_response["error"]["message"])
-      else:
-        raise Exception(
-          str(openai_response["error"]["code"])
-          + " : "
-          + openai_response["error"]["message"]
-        )  # TODO: use a more specific exception type
+      if openai_response.get("error"):
+        if (
+          openai_response["error"]["code"] == 502
+          or openai_response["error"]["code"] == 503
+        ):  # Bad gateway or Service Unavailable
+          raise httpcore.NetworkError(openai_response["error"]["message"])
+        else:
+          raise Exception(
+            str(openai_response["error"]["code"])
+            + " : "
+            + openai_response["error"]["message"]
+          )  # TODO: use a more specific exception type
 
-    # NB! this line may also throw an exception if the OpenAI announces that it is overloaded # TODO: do not retry for all error messages
-    response_content = openai_response["choices"][0]["message"]["content"]
-    finish_reason = openai_response["choices"][0]["finish_reason"]
+      # NB! this line may also throw an exception if the OpenAI announces that it is overloaded # TODO: do not retry for all error messages
+      response_content = openai_response["choices"][0]["message"]["content"]
+      finish_reason = openai_response["choices"][0]["finish_reason"]
 
-    return (response_content, finish_reason)
+      return (response_content, finish_reason)
 
-  except Exception as ex: 
+  except Exception as ex:  # httpcore.ReadTimeout
     t = type(
       ex
-    )  
+    )  # TODO!!!: pause on error, wait for use input in case of lack of credits
     if (
       t is httpcore.ReadTimeout or t is httpx.ReadTimeout
     ):  # both exception types have occurred
@@ -111,7 +161,7 @@ def completion_with_backoff(
         print("Response format error, giving up")
 
     else:  # / if (t ishttpcore.ReadTimeout
-      msg = str(ex) + "\n" + traceback.format_exc()
+      msg = f"{str(ex)}\n{traceback.format_exc()}"
       print(msg)
 
       if attempt_number < max_attempt_number:
@@ -235,6 +285,24 @@ def num_tokens_from_messages(messages, model, encoding=None):
 
 def get_max_tokens_for_model(model_name):
   # TODO: config
+  
+  #TODO: remove
+  if model_name == "claude-3-5-sonnet-20240620":
+    max_tokens=4096
+    
+    # Adding Claude model token limits
+    claude_limits = {
+        'claude-3-opus-20240229': 200000,
+        'claude-3-sonnet-20240229': 200000,
+        'claude-3-haiku-20240307': 200000,
+        'claude-2.1': 200000,
+        'claude-2.0': 100000,
+    }
+    
+    if model_name in claude_limits:
+        return claude_limits[model_name]
+
+  # OpenAI models
   if model_name == "o1":  # https://platform.openai.com/docs/models/#o1
     max_tokens = 200000
   elif model_name == "o1-2024-12-17":  # https://platform.openai.com/docs/models/#o1
@@ -335,9 +403,18 @@ def get_max_tokens_for_model(model_name):
 def run_llm_completion_uncached(
   model_name, gpt_timeout, messages, temperature=0, max_output_tokens=100
 ):
+  is_claude = any(model_name.startswith(prefix) for prefix in ['claude-'])
   max_tokens = get_max_tokens_for_model(model_name)
 
-  num_input_tokens = num_tokens_from_messages(
+  # Token counting (use Claude's counting for Claude models)
+  if is_claude:
+    try:
+        num_input_tokens = 0  # TODO log a warning
+    except Exception as e:
+        print(f"Warning: Could not count tokens for Claude model: {e}")
+        num_input_tokens = 0
+  else:
+    num_input_tokens = num_tokens_from_messages(
     messages, model_name
   )  # TODO: a more precise token count is already provided by OpenAI, no need to recalculate it here
   print(f"num_input_tokens: {num_input_tokens} max_tokens: {max_tokens}")
@@ -360,15 +437,23 @@ def run_llm_completion_uncached(
 
   time_elapsed = time.time() - time_start
 
-  too_long = finish_reason == "length"
+  #check
+  # too_long = finish_reason == "length"
+  too_long = finish_reason == "length" if not is_claude else finish_reason == "max_tokens"
 
   assert not too_long
 
   output_message = {"role": "assistant", "content": response_content}
-  num_output_tokens = num_tokens_from_messages(
-    [output_message], model_name
-  )  # TODO: a more precise token count is already provided by OpenAI, no need to recalculate it here
-  num_total_tokens = num_input_tokens + num_output_tokens
+  if is_claude:
+        #TODO: check if this is correct
+        num_output_tokens = 0  # Placeholder as Claude handles this internally
+        num_total_tokens = 0  # Placeholder
+  else:
+    num_output_tokens = num_tokens_from_messages(
+      [output_message], model_name
+    )  # TODO: a more precise token count is already provided by OpenAI, no need to recalculate it here
+    num_total_tokens = num_input_tokens + num_output_tokens
+
   print(
     f"num_total_tokens: {num_total_tokens} num_output_tokens: {num_output_tokens} max_tokens: {max_tokens} performance: {(num_output_tokens / time_elapsed)} output_tokens/sec"
   )
