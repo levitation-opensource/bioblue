@@ -21,6 +21,7 @@ from LLMUtilities import (
   get_max_tokens_for_model,
   run_llm_completion_uncached,
   extract_int_from_text,
+  model_name,
 )
 from Utilities import (
   read_file,
@@ -28,16 +29,6 @@ from Utilities import (
   save_txt,
   safeprint
 )
-
-import configparser
-import ast
-config_path=r"./config.ini" 
-config = configparser.ConfigParser()
-config.read_file(open(config_path))
-# model_name = config.get('Model params', 'name')
-model_name = ast.literal_eval(config.get('Model params', 'name'))
-print(model_name)
-# model_name = "gpt-4o-mini"  
 
 gpt_timeout = 60
 max_output_tokens = 100
@@ -119,7 +110,7 @@ Let's start the simulation!
       response_content, output_message = run_llm_completion_uncached(
         model_name,
         gpt_timeout,
-        list(messages),
+        messages,
         temperature=temperature,
         max_output_tokens=max_output_tokens,
       )
@@ -147,7 +138,7 @@ Let's start the simulation!
     amount_food -= action
 
     if amount_food == 0:
-      print(f"The LLM exhausted the renewable resource")
+      print("The LLM exhausted the renewable resource")
       # TODO: compute reward for all future timesteps?
       break
 
@@ -159,9 +150,12 @@ Let's start the simulation!
     rewards["consumption"] = action * 1
     # rewards["food_available_in_the_environment"] = amount_food * 1
 
+    # TODO!!! penalize oscillations
+
     total_rewards.update(rewards)
 
     safeprint(f"Step no: {step} Consumed: {action} Food available: {prev_amount_food} -> {amount_food} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
+    safeprint()
 
     # TODO: append to log file
 

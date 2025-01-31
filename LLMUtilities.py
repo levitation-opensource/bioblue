@@ -21,14 +21,11 @@ from anthropic import Anthropic
 
 from Utilities import Timer, wait_for_enter
 
-from dotenv import load_dotenv
-load_dotenv()  # Load variables from .env file
-
-
 import configparser
 import ast
 
-config_path=r"./config.ini" 
+
+config_path = r"config.ini" 
 config = configparser.ConfigParser()
 config.read_file(open(config_path))
 
@@ -45,17 +42,6 @@ elif model_name.lower().startswith('gpt'):
     print("Initialized OpenAI client")
 else:
     print(f"Unsupported model: {model_name}")
-# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# client = (
-#   OpenAI(
-#     api_key=os.environ.get(
-#       "OPENAI_API_KEY"
-#     ),  # This is the default and can be omitted
-#   )
-#   if os.environ.get("OPENAI_API_KEY")
-#   else None  # this file is always loaded by agents/__init__.py even when it is actually not used. But OpenAI class would throw if it gets unset API key.
-# )
 
 
 ## https://platform.openai.com/docs/guides/rate-limits/error-mitigation
@@ -65,7 +51,7 @@ else:
   stop=tenacity.stop_after_attempt(10),
 )  # TODO: config parameters
 def completion_with_backoff(
-  gpt_timeout,**kwargs
+  gpt_timeout, **kwargs
 ):  # TODO: ensure that only HTTP 429 is handled here
   # return openai.ChatCompletion.create(**kwargs)
 
@@ -79,37 +65,33 @@ def completion_with_backoff(
     # print(f"Sending OpenAI API request... Using timeout: {timeout} seconds")
 
     # TODO!!! support for other LLM API-s
-    is_claude = any(kwargs['model'].startswith(prefix) for prefix in ['claude-'])
+    is_claude = model_name.startswith('claude-')
     if is_claude:
-        messages = kwargs.pop('messages', [])
-        system_message = next((msg['content'] for msg in messages if msg['role'] == 'system'), None)
+    
+      messages = kwargs.pop('messages', [])
+      system_message = next((msg['content'] for msg in messages if msg['role'] == 'system'), None)
         
-        # Build the messages for Claude
-        claude_messages = []
-        for msg in messages:
-            if msg['role'] != 'system':  # Skip system messages as they're handled separately
-                claude_messages.append({
-                    'role': 'assistant' if msg['role'] == 'assistant' else 'user',
-                    'content': msg['content']
-                })
-        response = claude_client.messages.create(
-                model=kwargs['model'],
-                system=system_message,
-                messages=claude_messages,
-                max_tokens=kwargs.get('max_tokens', 1024),
-                temperature=kwargs.get('temperature', 0)
-            )
-        return (response.content[0].text, response.stop_reason)
+      # Build the messages for Claude
+      claude_messages = []
+      claude_messages = [msg for msg in messages if msg['role'] != 'system']
+      response = claude_client.messages.create(
+        model=kwargs['model'],
+        system=system_message,
+        messages=claude_messages,
+        max_tokens=kwargs.get('max_tokens', 1024),
+        temperature=kwargs.get('temperature', 0)
+      )
+      return (response.content[0].text, response.stop_reason)
+      
     else:
 
-    # TODO!!! support for local LLM-s
-    #
+      # TODO!!! support for local LLM-s
+      #
 
       # set openai internal max_retries to 1 so that we can log errors to console
       openai_response = openai_client.with_options(
         timeout=gpt_timeout, max_retries=1
       ).with_raw_response.chat.completions.create(**kwargs)
-      
 
       # print("Done OpenAI API request.")
 
@@ -136,10 +118,10 @@ def completion_with_backoff(
 
       return (response_content, finish_reason)
 
-  except Exception as ex:  # httpcore.ReadTimeout
+  except Exception as ex: 
     t = type(
       ex
-    )  # TODO!!!: pause on error, wait for use input in case of lack of credits
+    )  
     if (
       t is httpcore.ReadTimeout or t is httpx.ReadTimeout
     ):  # both exception types have occurred
@@ -286,24 +268,26 @@ def num_tokens_from_messages(messages, model, encoding=None):
 def get_max_tokens_for_model(model_name):
   # TODO: config
   
-  #TODO: remove
-  if model_name == "claude-3-5-sonnet-20240620":
-    max_tokens=4096
-    
+  is_claude = model_name.startswith('claude-')
+  
+  if is_claude:
+       
     # Adding Claude model token limits
     claude_limits = {
-        'claude-3-opus-20240229': 200000,
-        'claude-3-sonnet-20240229': 200000,
-        'claude-3-haiku-20240307': 200000,
-        'claude-2.1': 200000,
-        'claude-2.0': 100000,
+      'claude-3-opus-20240229': 200000,
+      'claude-3-sonnet-20240229': 200000,
+      'claude-3-haiku-20240307': 200000,
+      'claude-2.1': 200000,
+      'claude-2.0': 100000,
     }
     
     if model_name in claude_limits:
-        return claude_limits[model_name]
+      max_tokens = claude_limits[model_name]
+    else:
+      max_tokens = 4096
 
-  # OpenAI models
-  if model_name == "o1":  # https://platform.openai.com/docs/models/#o1
+  # OpenAI models # TODO: refactor to use dictionary like claude's branch uses
+  elif model_name == "o1":  # https://platform.openai.com/docs/models/#o1
     max_tokens = 200000
   elif model_name == "o1-2024-12-17":  # https://platform.openai.com/docs/models/#o1
     max_tokens = 200000
@@ -403,16 +387,10 @@ def get_max_tokens_for_model(model_name):
 def run_llm_completion_uncached(
   model_name, gpt_timeout, messages, temperature=0, max_output_tokens=100
 ):
-  is_claude = any(model_name.startswith(prefix) for prefix in ['claude-'])
-  max_tokens = get_max_tokens_for_model(model_name)
+  is_claude = model_name.startswith('claude-')
 
-  # Token counting (use Claude's counting for Claude models)
   if is_claude:
-    try:
-        num_input_tokens = 0  # TODO log a warning
-    except Exception as e:
-        print(f"Warning: Could not count tokens for Claude model: {e}")
-        num_input_tokens = 0
+    num_input_tokens = 0 # TODO
   else:
     num_input_tokens = num_tokens_from_messages(
     messages, model_name
@@ -437,17 +415,14 @@ def run_llm_completion_uncached(
 
   time_elapsed = time.time() - time_start
 
-  #check
-  # too_long = finish_reason == "length"
   too_long = finish_reason == "length" if not is_claude else finish_reason == "max_tokens"
-
   assert not too_long
 
   output_message = {"role": "assistant", "content": response_content}
   if is_claude:
-        #TODO: check if this is correct
-        num_output_tokens = 0  # Placeholder as Claude handles this internally
-        num_total_tokens = 0  # Placeholder
+    #TODO: check if this is correct
+    num_output_tokens = 0  # Placeholder as Claude handles this internally
+    num_total_tokens = 0  # Placeholder
   else:
     num_output_tokens = num_tokens_from_messages(
       [output_message], model_name
