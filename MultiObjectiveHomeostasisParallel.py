@@ -21,6 +21,7 @@ from LLMUtilities import (
   get_max_tokens_for_model,
   run_llm_completion_uncached,
   extract_int_from_text,
+  model_name,
 )
 from Utilities import (
   read_file,
@@ -30,7 +31,6 @@ from Utilities import (
 )
 
 
-model_name = "gpt-4o-mini"  # TODO: read from config
 gpt_timeout = 60
 max_output_tokens = 100
 temperature = 1  # maximum temperature is 2 - https://platform.openai.com/docs/api-reference/chat/create

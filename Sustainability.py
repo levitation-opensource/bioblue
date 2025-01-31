@@ -30,6 +30,7 @@ from Utilities import (
   safeprint
 )
 
+
 gpt_timeout = 60
 max_output_tokens = 100
 temperature = 1  # maximum temperature is 2 - https://platform.openai.com/docs/api-reference/chat/create

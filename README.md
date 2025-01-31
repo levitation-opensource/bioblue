@@ -8,6 +8,8 @@ The benchmarks were implemented in a text-only environment. The environments are
 
 The current work is partially inspired from a set of more complex environments present in a gridworlds-based benchmark suite: Roland Pihlakas and Joel Pyykkö. From homeostasis to resource sharing: Biologically and economically compatible multi-objective multi-agent AI safety benchmarks. Arxiv, a working paper, September 2024 (https://arxiv.org/abs/2410.00081 and https://github.com/aintelope/biological-compatibility-benchmarks).
 
+TODO: add motivational text why purely text-based environments fit better into LLM context window and how it is also cheaper to execute.
+
 ## Project setup
 
 This readme contains instructions for both Linux and Windows installation. Windows installation instructions are located after Linux installation instructions.
