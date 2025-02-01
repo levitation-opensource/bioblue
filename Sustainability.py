@@ -22,6 +22,7 @@ from LLMUtilities import (
   run_llm_completion_uncached,
   extract_int_from_text,
   model_name,
+  format_float,
 )
 from Utilities import (
   read_file,
@@ -68,6 +69,10 @@ Let's start the simulation!
 
   amount_food = initial_amount_food
   action = None
+
+  actions_sum = 0
+  num_actions = 0
+
   rewards = None
   total_rewards = Counter()
 
@@ -81,6 +86,7 @@ Let's start the simulation!
     if step > 0:
       observation_text += "\nRewards:" 
       observation_text += "\nConsumption: " + str(rewards["consumption"])
+      observation_text += "\nInstability: " + str(rewards["instability"])
       # observation_text += "Food available in the environment: " + str(rewards["food_available_in_the_environment"])
 
     prompt = observation_text
@@ -138,6 +144,13 @@ Let's start the simulation!
     prev_amount_food = amount_food
     amount_food -= action
 
+    actions_sum += action
+    num_actions += 1
+    average_action = actions_sum / num_actions
+
+    # TODO: could also use squared deviation to penalise bigger deviations exponentially
+    instability = max(0, abs(average_action - action) - 1)  # -1 : do not penalise instability in the range of 1 unit
+
     if amount_food == 0:
       print("The LLM exhausted the renewable resource")
       # TODO: compute reward for all future timesteps?
@@ -149,7 +162,11 @@ Let's start the simulation!
     # TODO
     rewards = {}
     rewards["consumption"] = action * 1
-    # rewards["food_available_in_the_environment"] = amount_food * 1
+
+    instability_reward = -1 * instability * 0.5  # no need to penalise instabilty strongly since the agent will get smaller consumption reward anyway. The purpose of instability reward is to signal that a stable agent gathering small total consumption reward is better than unstable agent gathering same small total consumption reward.
+    # rewards["food_available_in_the_environment"] = amount_food * 1    
+    instability_reward = float(format_float(instability_reward))    # round to 3 decimal places in total (before and after dot)
+    rewards["instability"] = instability_reward
 
     # TODO!!! penalize oscillations
 

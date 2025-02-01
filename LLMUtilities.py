@@ -445,3 +445,12 @@ def extract_int_from_text(text):
 
   result = int(''.join(c for c in text if c.isdigit() or c == "-"))
   return result
+
+def format_float(value):
+  if abs(value) < 1e-3:  # TODO: tune/config
+    value = 0
+  # format to have three numbers in total, regardless whether they are before or after comma
+  text = "{0:.3f}".format(float(value))  # TODO: tune/config
+  if text == "0.000" or text == "-0.000":
+    text = "0.0"
+  return text
