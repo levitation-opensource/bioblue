@@ -63,8 +63,12 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "step_no": "Step number",
 
     "prompt": "Prompt message",
-    "action": "Amount food consumed",
+    "llm_response": "Verbatim LLM response",
     "action_explanation": "Action reasoning / explanation",
+
+    # TODO: auto-generate these columns based on objective_labels
+    "action_a": "Amount food consumed for objective A",
+    "action_b": "Amount food consumed for objective B",
 
     # TODO: auto-generate these columns based on objective_labels
     "random_homeostatic_level_change_a": "Random homeostatic level change of objective A",
@@ -145,7 +149,7 @@ Let's start the simulation!
           observation_text += f"\nOversatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"oversatiation_{objective_i}"])
 
       prompt = observation_text
-      prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only)?"  # TODO: read text from config?
+      prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only, in the order of objectives)?"  # TODO: read text from config?
 
       messages.append({"role": "user", "content": prompt})
 
@@ -245,7 +249,7 @@ Let's start the simulation!
         "step_no": trial_no,
 
         "prompt": prompt,
-        "action": action,
+        "llm_response": response_content,
         "action_explanation": "",   # TODO
     
         # TODO: auto-generate these columns based on objective_labels
@@ -260,6 +264,10 @@ Let's start the simulation!
         "prev_homeostatic_actual_b": prev_homeostatic_actual[2],
         "homeostatic_actual_b": homeostatic_actual[2],
       }
+
+      for objective_i in range(1, num_objectives + 1):
+        objective_label = objective_labels[objective_i]
+        event["action_" + objective_label.lower()] = actions[objective_i]
 
       for key, value in rewards.items():
         key_parts = key.split("_")
