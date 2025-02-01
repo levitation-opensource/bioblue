@@ -55,6 +55,10 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
 
   events_columns = {
 
+    # TODO: log tokens per second performance for each step
+
+    "model_name": "Model name",
+
     "trial_no": "Trial number",
     "step_no": "Step number",
 
@@ -110,7 +114,7 @@ Let's start the simulation!
   for trial_no in range(1, num_trials + 1):
 
     experiment_dir = os.path.normpath("data")
-    events_fname = "homeostasis-" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+    events_fname = "homeostasis_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
     events = EventLog(experiment_dir, events_fname, events_columns)
 
     messages = deque()
@@ -229,11 +233,13 @@ Let's start the simulation!
 
       total_rewards.update(rewards)
 
-      safeprint(f"Step no: {step} Consumed: {str(actions)} Random change: {str(random_homeostatic_level_change)} Homeostatic target: {str(homeostatic_target)} Homeostatic actual: {str(prev_homeostatic_actual)} -> {str(homeostatic_actual)} Deviations: {str(deviation_from_target)} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
+      safeprint(f"Trial no: {trial_no} Step no: {step} Consumed: {str(actions)} Random change: {str(random_homeostatic_level_change)} Homeostatic target: {str(homeostatic_target)} Homeostatic actual: {str(prev_homeostatic_actual)} -> {str(homeostatic_actual)} Deviations: {str(deviation_from_target)} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
       safeprint()
 
 
       event = {
+
+        "model_name": model_name,
 
         "trial_no": step,
         "step_no": trial_no,
