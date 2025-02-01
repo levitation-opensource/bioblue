@@ -74,6 +74,17 @@ Run
 <br>`python MultiObjectiveHomeostasisParallel.py`
 
 
+# Results
+
+The experimental outputs are in the subfolder data. There are five main sets of outputs by now:
+* GPT 4o-mini - sustainability
+* GPT 4o-mini - homeostasis
+* GPT 4o-mini - multi-objective homeostasis
+* Claude 3.5 haiku - sustainability
+* Claude 3.5 haiku - homeostasis
+Each benchmark has 10 trials, stored in separate TSV files.
+
+
 # Inspiration
 
 * A working paper that inspired the creation of this repo: Pihlakas, R & Pyykkö, J. "From homeostasis to resource sharing: Biologically and economically compatible multi-objective multi-agent AI safety benchmarks". Arxiv (2024). https://arxiv.org/abs/2410.00081
