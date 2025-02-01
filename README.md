@@ -68,6 +68,9 @@ You can download the latest installer from https://www.python.org/downloads/rele
 
 ## Executing `BioBlue`
 
+Set environment variable:
+`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`.
+
 Run 
 <br>`python Sustainability.py`
 <br>`python Homeostasis.py`
