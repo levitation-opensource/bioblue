@@ -393,8 +393,11 @@ def run_llm_completion_uncached(
     num_input_tokens = 0 # TODO
   else:
     num_input_tokens = num_tokens_from_messages(
-    messages, model_name
-  )  # TODO: a more precise token count is already provided by OpenAI, no need to recalculate it here
+      messages, model_name
+    )  # TODO: a more precise token count is already provided by OpenAI, no need to recalculate it here
+
+  max_tokens = get_max_tokens_for_model(model_name)
+
   print(f"num_input_tokens: {num_input_tokens} max_tokens: {max_tokens}")
 
   time_start = time.time()
