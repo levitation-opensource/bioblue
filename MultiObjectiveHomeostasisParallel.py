@@ -131,7 +131,8 @@ Let's start the simulation!
     total_rewards = Counter()
 
     # NB! seed the random number generator in order to make the benchmark deterministic
-    random.seed(0)
+    # TODO: add seed to the log file
+    random.seed(trial_no)    # initialise each next trial with a different seed so that the random changes are different for each trial
 
     for step in range(1, simulation_length_steps + 1):
 
