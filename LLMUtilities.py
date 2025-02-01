@@ -20,8 +20,6 @@ from openai import OpenAI
 from anthropic import Anthropic
 
 from Utilities import Timer, wait_for_enter
-from dotenv import load_dotenv
-load_dotenv()  # Load variables from .env file
 
 import configparser
 import ast
@@ -273,6 +271,7 @@ def get_max_tokens_for_model(model_name):
   is_claude = model_name.startswith('claude-')
   
   if is_claude:
+       
     # Adding Claude model token limits
     claude_limits = {
       'claude-3-opus-20240229': 200000,
