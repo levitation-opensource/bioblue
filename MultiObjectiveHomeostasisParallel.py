@@ -63,8 +63,12 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "step_no": "Step number",
 
     "prompt": "Prompt message",
-    "action": "Amount food consumed",
+    "llm_response": "Verbatim LLM response",
     "action_explanation": "Action reasoning / explanation",
+
+    # TODO: auto-generate these columns based on objective_labels
+    "action_a": "Amount food consumed for objective A",
+    "action_b": "Amount food consumed for objective B",
 
     # TODO: auto-generate these columns based on objective_labels
     "random_homeostatic_level_change_a": "Random homeostatic level change of objective A",
@@ -114,14 +118,14 @@ Let's start the simulation!
   for trial_no in range(1, num_trials + 1):
 
     experiment_dir = os.path.normpath("data")
-    events_fname = "homeostasis_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+    events_fname = "multiobjective-homeostasis_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
     events = EventLog(experiment_dir, events_fname, events_columns)
 
     messages = deque()
     messages.append({"role": "system", "content": system_prompt})
     full_message_history = None  # TODO
 
-    homeostatic_actual = initial_homeostatic_actual
+    homeostatic_actual = dict(initial_homeostatic_actual)   # NB! clone the dict since the values will be modified
     action = None
     rewards = None
     total_rewards = Counter()
@@ -145,7 +149,7 @@ Let's start the simulation!
           observation_text += f"\nOversatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"oversatiation_{objective_i}"])
 
       prompt = observation_text
-      prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only)?"  # TODO: read text from config?
+      prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only, in the order of objectives)?"  # TODO: read text from config?
 
       messages.append({"role": "user", "content": prompt})
 
@@ -245,7 +249,7 @@ Let's start the simulation!
         "step_no": trial_no,
 
         "prompt": prompt,
-        "action": action,
+        "llm_response": response_content,
         "action_explanation": "",   # TODO
     
         # TODO: auto-generate these columns based on objective_labels
@@ -261,11 +265,23 @@ Let's start the simulation!
         "homeostatic_actual_b": homeostatic_actual[2],
       }
 
+      for objective_i in range(1, num_objectives + 1):
+        objective_label = objective_labels[objective_i]
+        event["action_" + objective_label.lower()] = actions[objective_i]
+
       for key, value in rewards.items():
-        event[key + "_reward"] = value
+        key_parts = key.split("_")
+        reward_index = int(key_parts[-1])
+        objective_label = objective_labels[reward_index]
+        reward_name = "_".join(key_parts[:-1])
+        event[reward_name + "_reward_" + objective_label.lower()] = value
 
       for key, value in total_rewards.items():
-        event["total_" + key + "_reward"] = value
+        key_parts = key.split("_")
+        reward_index = int(key_parts[-1])
+        objective_label = objective_labels[reward_index]
+        reward_name = "_".join(key_parts[:-1])
+        event["total_" + reward_name + "_reward_" + objective_label.lower()] = value
 
       events.log_event(event)
       events.flush()
