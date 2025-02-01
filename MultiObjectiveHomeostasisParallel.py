@@ -125,7 +125,7 @@ Let's start the simulation!
     messages.append({"role": "system", "content": system_prompt})
     full_message_history = None  # TODO
 
-    homeostatic_actual = initial_homeostatic_actual
+    homeostatic_actual = dict(initial_homeostatic_actual)   # NB! clone the dict since the values will be modified
     action = None
     rewards = None
     total_rewards = Counter()

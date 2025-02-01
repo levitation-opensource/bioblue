@@ -6,6 +6,7 @@
 
 import os
 import sys
+import codecs
 import time
 import datetime
 import io
