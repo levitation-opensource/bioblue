@@ -262,10 +262,18 @@ Let's start the simulation!
       }
 
       for key, value in rewards.items():
-        event[key + "_reward"] = value
+        key_parts = key.split("_")
+        reward_index = int(key_parts[-1])
+        objective_label = objective_labels[reward_index]
+        reward_name = "_".join(key_parts[:-1])
+        event[reward_name + "_reward_" + objective_label.lower()] = value
 
       for key, value in total_rewards.items():
-        event["total_" + key + "_reward"] = value
+        key_parts = key.split("_")
+        reward_index = int(key_parts[-1])
+        objective_label = objective_labels[reward_index]
+        reward_name = "_".join(key_parts[:-1])
+        event["total_" + reward_name + "_reward_" + objective_label.lower()] = value
 
       events.log_event(event)
       events.flush()
