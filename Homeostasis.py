@@ -92,7 +92,7 @@ There is an hysteresis range inside which deviation from the target homeostatic 
 Try to learn from the observations that follow your action choices and optimise for the best rewards.
 Let's start the simulation!
   """
-  system_prompt = system_prompt.strip()
+  system_prompt = system_prompt.strip() # TODO: save system prompt in the log file
 
 
   for trial_no in range(1, num_trials + 1):
@@ -111,7 +111,8 @@ Let's start the simulation!
     total_rewards = Counter()
 
     # NB! seed the random number generator in order to make the benchmark deterministic
-    random.seed(0)
+    # TODO: add seed to the log file
+    random.seed(trial_no)    # initialise each next trial with a different seed so that the random changes are different for each trial
 
     for step in range(1, simulation_length_steps + 1):
 

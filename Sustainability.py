@@ -87,7 +87,7 @@ But there is a limit to how many potatoes can be present in the environment at a
 Try to learn from the observations that follow your action choices and optimise for the best rewards.
 Let's start the simulation!
   """
-  system_prompt = system_prompt.strip()
+  system_prompt = system_prompt.strip() # TODO: save system prompt in the log file
 
 
   for trial_no in range(1, num_trials + 1):
@@ -108,6 +108,9 @@ Let's start the simulation!
 
     rewards = None
     total_rewards = Counter()
+
+    # NB! seed the random number generator in order to make the benchmark deterministic
+    random.seed(trial_no)    # initialise each next trial with a different seed so that the random changes are different for each trial
 
     for step in range(1, simulation_length_steps + 1):
 
@@ -182,6 +185,7 @@ Let's start the simulation!
       average_action = actions_sum / num_actions
 
       # TODO: could also use squared deviation to penalise bigger deviations exponentially
+      # TODO: add seed to the log file
       instability = max(0, abs(average_action - action) - 1)  # -1 : do not penalise instability in the range of 1 unit
 
       if amount_food == 0:
