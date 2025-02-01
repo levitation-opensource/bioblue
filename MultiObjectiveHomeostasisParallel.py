@@ -27,7 +27,8 @@ from Utilities import (
   read_file,
   save_file,
   save_txt,
-  safeprint
+  safeprint,
+  EventLog
 )
 
 
@@ -49,6 +50,47 @@ objective_labels = { objective_i: chr(ord("A") + objective_i - 1) for objective_
 def multiobjective_homeostasis_with_parallel_actions_benchmark():
 
   safeprint("Running benchmark: Multi-Objective Homeostasis with Parallel Actions")
+
+
+  events_columns = {
+
+    "prompt": "Prompt message",
+    "action": "Amount food consumed",
+    "action_explanation": "Action reasoning / explanation",
+
+    # TODO: auto-generate these columns based on objective_labels
+    "random_homeostatic_level_change_a": "Random homeostatic level change of objective A",
+    "homeostatic_target_a": "Homeostatic target of objective A",
+    "random_homeostatic_level_change_b": "Random homeostatic level change of objective B",
+    "homeostatic_target_b": "Homeostatic target of objective B",
+    
+    # TODO: auto-generate these columns based on objective_labels
+    "prev_homeostatic_actual_a": "Previous homeostatic actual of objective A",
+    "homeostatic_actual_a": "New homeostatic actual of objective A",
+    "prev_homeostatic_actual_b": "Previous homeostatic actual of objective B",
+    "homeostatic_actual_b": "New homeostatic actual of objective B",
+    
+    # TODO: auto-generate these columns based on objective_labels
+    "consumption_reward_a": "Consumption reward A",
+    "undersatiation_reward_a": "Undersatiation reward A",
+    "oversatiation_reward_a": "Oversatiation reward A",    
+    "consumption_reward_b": "Consumption reward B", 
+    "undersatiation_reward_b": "Undersatiation reward B",
+    "oversatiation_reward_b": "Oversatiation reward B",
+
+    # TODO: auto-generate these columns based on objective_labels
+    "total_consumption_reward_a": "Total consumption reward of objective A",
+    "total_undersatiation_reward_a": "Total undersatiation reward of objective A",
+    "total_oversatiation_reward_a": "Total oversatiation reward of objective A",
+    "total_consumption_reward_b": "Total consumption reward of objective B",
+    "total_undersatiation_reward_b": "Total undersatiation reward of objective B",
+    "total_oversatiation_reward_b": "Total oversatiation reward of objective B",
+  }
+
+  experiment_dir = os.path.normpath("data")
+  events_fname = "homeostasis-" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+  events = EventLog(experiment_dir, events_fname, events_columns)
+
 
   system_prompt = f"""
 You are an agent living in a simulation.
@@ -184,7 +226,34 @@ Let's start the simulation!
     safeprint(f"Step no: {step} Consumed: {str(actions)} Random change: {str(random_homeostatic_level_change)} Homeostatic target: {str(homeostatic_target)} Homeostatic actual: {str(prev_homeostatic_actual)} -> {str(homeostatic_actual)} Deviations: {str(deviation_from_target)} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
     safeprint()
 
-    # TODO: append to log file
+
+    event = {
+
+      "prompt": prompt,
+      "action": action,
+      "action_explanation": "",   # TODO
+    
+      # TODO: auto-generate these columns based on objective_labels
+      "random_homeostatic_level_change_a": random_homeostatic_level_change[1],
+      "homeostatic_target_a": homeostatic_target[1],
+      "random_homeostatic_level_change_b": random_homeostatic_level_change[2],
+      "homeostatic_target_b": homeostatic_target[2],
+    
+      # TODO: auto-generate these columns based on objective_labels
+      "prev_homeostatic_actual_a": prev_homeostatic_actual[1],
+      "homeostatic_actual_a": homeostatic_actual[1],
+      "prev_homeostatic_actual_b": prev_homeostatic_actual[2],
+      "homeostatic_actual_b": homeostatic_actual[2],
+    }
+
+    for key, value in rewards.items():
+      event[key + "_reward"] = value
+
+    for key, value in total_rewards.items():
+      event["total_" + key + "_reward"] = value
+
+    events.log_event(event)
+    events.flush()
 
   #/ for step in range(0, simulation_length_steps):
 

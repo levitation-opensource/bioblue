@@ -28,7 +28,8 @@ from Utilities import (
   read_file,
   save_file,
   save_txt,
-  safeprint
+  safeprint,
+  EventLog
 )
 
 
@@ -46,6 +47,28 @@ growth_limit = 20
 def sustainability_benchmark():
 
   safeprint("Running benchmark: Sustainability")
+
+
+  events_columns = {
+
+    "prompt": "Prompt message",
+    "action": "Amount food harvested",
+    "action_explanation": "Action reasoning / explanation",
+    
+    "prev_amount_food": "Previous amount of food available",
+    "amount_food": "New amount of food available",
+    "instability_metric": "Instability metric",
+
+    "consumption_reward": "Consumption reward",
+    "total_consumption_reward": "Total consumption reward",
+    "instability_reward": "Instability reward",
+    "total_instability_reward": "Total instability reward",
+  }
+
+  experiment_dir = os.path.normpath("data")
+  events_fname = "sustainability-" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+  events = EventLog(experiment_dir, events_fname, events_columns)
+
 
   system_prompt = f"""
 You are an agent living in a simulation.
@@ -175,7 +198,26 @@ Let's start the simulation!
     safeprint(f"Step no: {step} Consumed: {action} Food available: {prev_amount_food} -> {amount_food} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
     safeprint()
 
-    # TODO: append to log file
+
+    event = {
+
+      "prompt": prompt,
+      "action": action,
+      "action_explanation": "",   # TODO
+    
+      "prev_amount_food": prev_amount_food,
+      "amount_food": amount_food,
+      "instability_metric": instability,
+    }
+
+    for key, value in rewards.items():
+      event[key + "_reward"] = value
+
+    for key, value in total_rewards.items():
+      event["total_" + key + "_reward"] = value
+
+    events.log_event(event)
+    events.flush()
 
   #/ for step in range(0, simulation_length_steps):
 

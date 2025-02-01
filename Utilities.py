@@ -11,6 +11,9 @@ import datetime
 import io
 import pickle
 import gzip
+from pathlib import Path
+import csv
+import re
 
 
 sentinel = object() # https://web.archive.org/web/20200221224620id_/http://effbot.org/zone/default-values.htm
@@ -211,3 +214,87 @@ def save_txt(filename, str, quiet = False, make_backup = False, append = False, 
     rename_temp_file(fullfilename, make_backup)
 
 #/ def save_txt(filename, data):
+
+
+class EventLog(object):
+  default_gzip_compresslevel = 6  # 6 is default level for gzip: https://linux.die.net/man/1/gzip and https://github.com/ebiggers/libdeflate
+
+  def __init__(
+    self,
+    experiment_dir,
+    events_fname,
+    headers,
+    gzip_log=False,
+    gzip_compresslevel=None,
+  ):
+    record_path = Path(os.path.join(experiment_dir, events_fname))
+    # logger.info(f"Saving records to disk at {record_path}")
+    record_path.parent.mkdir(exist_ok=True, parents=True)
+
+    if isinstance(headers, dict):
+      self.header_keys = list(headers.keys())  # used with log_event_from_dict
+      headers = list(headers.values())
+    else:
+      self.header_keys = headers
+
+    if gzip_log:
+      if gzip_compresslevel is None:
+        gzip_compresslevel = self.default_gzip_compresslevel
+      write_header = not os.path.exists(record_path + ".gz")
+      self.file = gzip.open(
+        record_path + ".gz",
+        mode="at",
+        newline="",
+        encoding="utf-8",
+        compresslevel=gzip_compresslevel,
+      )  # csv writer creates its own newlines therefore need to set newline to empty string here   # TODO: buffering for gzip
+    else:
+      write_header = not os.path.exists(record_path)
+      self.file = open(
+        record_path,
+        mode="at",
+        buffering=1024 * 1024,
+        newline="",
+        encoding="utf-8",
+      )  # csv writer creates its own newlines therefore need to set newline to empty string here
+
+    self.writer = csv.writer(self.file, quoting=csv.QUOTE_MINIMAL, delimiter="\t")
+
+    if (
+      write_header
+    ):  # TODO: if the file already exists then assert that the header is same
+      self.writer.writerow(headers)
+      # self.file.flush()
+
+  def log_event(self, event):
+
+    if isinstance(event, dict):
+      values = [event.get(key) for key in self.header_keys]
+    else:
+      values = event
+
+    # transformed_cols = []
+    # for index, col in enumerate(event):
+    #   # if type(col) == datetime.datetime:
+    #   #  col = datetime.datetime.strftime(col, '%Y.%m.%d-%H.%M.%S')
+    #   transformed_cols.append(col)
+
+    values = [
+      x.strip().replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t")   # CSV/TSV format does not support these characters
+      # re.sub(r"[\n\r\t]", " ", x.strip())   # CSV/TSV format does not support these characters
+      if isinstance(x, str) 
+      else x 
+      for x in values
+    ]
+
+    self.writer.writerow(values)
+    # self.file.flush()
+
+  def flush(self):
+    self.file.flush()
+
+  def close(self):
+    self.file.flush()
+    self.file.close()
+
+# / class EventLog(object):

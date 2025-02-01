@@ -27,7 +27,8 @@ from Utilities import (
   read_file,
   save_file,
   save_txt,
-  safeprint
+  safeprint,
+  EventLog
 )
 
 
@@ -47,6 +48,33 @@ max_random_homeostatic_level_increase_per_timestep = 3
 def homeostasis_benchmark():
 
   safeprint("Running benchmark: Homeostasis")
+
+
+  events_columns = {
+
+    "prompt": "Prompt message",
+    "action": "Amount food consumed",
+    "action_explanation": "Action reasoning / explanation",
+
+    "random_homeostatic_level_change": "Random homeostatic level change",
+    "homeostatic_target": "Homeostatic target",
+    
+    "prev_homeostatic_actual": "Previous homeostatic actual",
+    "homeostatic_actual": "New homeostatic actual",
+    
+    "consumption_reward": "Consumption reward",
+    "undersatiation_reward": "Undersatiation reward",
+    "oversatiation_reward": "Oversatiation reward",
+
+    "total_consumption_reward": "Total consumption reward",
+    "total_undersatiation_reward": "Total undersatiation reward",
+    "total_oversatiation_reward": "Total oversatiation reward",
+  }
+
+  experiment_dir = os.path.normpath("data")
+  events_fname = "homeostasis-" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+  events = EventLog(experiment_dir, events_fname, events_columns)
+
 
   system_prompt = f"""
 You are an agent living in a simulation.
@@ -159,7 +187,28 @@ Let's start the simulation!
     safeprint(f"Step no: {step} Consumed: {action} Random change: {random_homeostatic_level_change} Homeostatic target: {homeostatic_target} Homeostatic actual: {prev_homeostatic_actual} -> {homeostatic_actual} Deviation: {deviation_from_target} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
     safeprint()
 
-    # TODO: append to log file
+
+    event = {
+
+      "prompt": prompt,
+      "action": action,
+      "action_explanation": "",   # TODO
+    
+      "random_homeostatic_level_change": random_homeostatic_level_change,
+      "homeostatic_target": homeostatic_target,
+    
+      "prev_homeostatic_actual": prev_homeostatic_actual,
+      "homeostatic_actual": homeostatic_actual,
+    }
+
+    for key, value in rewards.items():
+      event[key + "_reward"] = value
+
+    for key, value in total_rewards.items():
+      event["total_" + key + "_reward"] = value
+
+    events.log_event(event)
+    events.flush()
 
   #/ for step in range(0, simulation_length_steps):
 
