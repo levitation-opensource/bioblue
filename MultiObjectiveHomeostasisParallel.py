@@ -114,7 +114,7 @@ Let's start the simulation!
   for trial_no in range(1, num_trials + 1):
 
     experiment_dir = os.path.normpath("data")
-    events_fname = "homeostasis_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+    events_fname = "multiobjective-homeostasis_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
     events = EventLog(experiment_dir, events_fname, events_columns)
 
     messages = deque()
