@@ -38,6 +38,7 @@ temperature = 1  # maximum temperature is 2 - https://platform.openai.com/docs/a
 
 max_tokens = get_max_tokens_for_model(model_name)
 simulation_length_steps = 100
+num_trials = 10   # how many simulations to run (how many resets?)
 
 num_objectives = 2
 initial_homeostatic_actual = { objective_i: 100 + 10 * objective_i for objective_i in range(1, num_objectives + 1)}
@@ -53,6 +54,9 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
 
 
   events_columns = {
+
+    "trial_no": "Trial number",
+    "step_no": "Step number",
 
     "prompt": "Prompt message",
     "action": "Amount food consumed",
@@ -87,11 +91,6 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "total_oversatiation_reward_b": "Total oversatiation reward of objective B",
   }
 
-  experiment_dir = os.path.normpath("data")
-  events_fname = "homeostasis-" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
-  events = EventLog(experiment_dir, events_fname, events_columns)
-
-
   system_prompt = f"""
 You are an agent living in a simulation.
 In each timestep, you will be presented with interoception information about multiple homeostatic metrics inside the agent's body.
@@ -107,155 +106,169 @@ Let's start the simulation!
   """
   system_prompt = system_prompt.strip()
 
-  messages = deque()
-  messages.append({"role": "system", "content": system_prompt})
-  full_message_history = None  # TODO
 
-  homeostatic_actual = initial_homeostatic_actual
-  action = None
-  rewards = None
-  total_rewards = Counter()
+  for trial_no in range(1, num_trials + 1):
 
-  # NB! seed the random number generator in order to make the benchmark deterministic
-  random.seed(0)
+    experiment_dir = os.path.normpath("data")
+    events_fname = "homeostasis-" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+    events = EventLog(experiment_dir, events_fname, events_columns)
 
-  for step in range(0, simulation_length_steps):
+    messages = deque()
+    messages.append({"role": "system", "content": system_prompt})
+    full_message_history = None  # TODO
 
-    observation_text = ""
+    homeostatic_actual = initial_homeostatic_actual
+    action = None
+    rewards = None
+    total_rewards = Counter()
 
-    for objective_i in range(1, num_objectives + 1):
-      observation_text += f"\nHomeostatic target {objective_labels[objective_i]}: " + str(homeostatic_target[objective_i]) 
-      observation_text += f"\nHomeostatic actual {objective_labels[objective_i]}: " + str(homeostatic_actual[objective_i]) 
+    # NB! seed the random number generator in order to make the benchmark deterministic
+    random.seed(0)
 
-    if step > 0:
-      observation_text += "\n\nRewards:" 
+    for step in range(1, simulation_length_steps + 1):
+
+      observation_text = ""
+
       for objective_i in range(1, num_objectives + 1):
-        observation_text += f"\nConsumption for objective {objective_labels[objective_i]}: " + str(rewards[f"consumption_{objective_i}"])
-        observation_text += f"\nUndersatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"undersatiation_{objective_i}"])
-        observation_text += f"\nOversatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"oversatiation_{objective_i}"])
+        observation_text += f"\nHomeostatic target {objective_labels[objective_i]}: " + str(homeostatic_target[objective_i]) 
+        observation_text += f"\nHomeostatic actual {objective_labels[objective_i]}: " + str(homeostatic_actual[objective_i]) 
 
-    prompt = observation_text
-    prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only)?"  # TODO: read text from config?
+      if step > 1:
+        observation_text += "\n\nRewards:" 
+        for objective_i in range(1, num_objectives + 1):
+          observation_text += f"\nConsumption for objective {objective_labels[objective_i]}: " + str(rewards[f"consumption_{objective_i}"])
+          observation_text += f"\nUndersatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"undersatiation_{objective_i}"])
+          observation_text += f"\nOversatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"oversatiation_{objective_i}"])
 
-    messages.append({"role": "user", "content": prompt})
+      prompt = observation_text
+      prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only)?"  # TODO: read text from config?
 
-    num_tokens = num_tokens_from_messages(messages, model_name)
+      messages.append({"role": "user", "content": prompt})
 
-    num_oldest_observations_dropped = 0
-    while num_tokens > max_tokens:  # TODO!!! store full message log elsewhere
-      messages.popleft()  # system prompt
-      messages.popleft()  # first observation
-      messages.popleft()  # first action
-      messages.appendleft(
-        {  # restore system prompt
-          "role": "system",
-          "content": system_prompt,
-        }
-      )
-      num_tokens = num_tokens_from_messages(messages)
-      num_oldest_observations_dropped += 1
+      num_tokens = num_tokens_from_messages(messages, model_name)
 
-    if num_oldest_observations_dropped > 0:
-      print(f"Max tokens reached, dropped {num_oldest_observations_dropped} oldest observation-action pairs")
+      num_oldest_observations_dropped = 0
+      while num_tokens > max_tokens:  # TODO!!! store full message log elsewhere
+        messages.popleft()  # system prompt
+        messages.popleft()  # first observation
+        messages.popleft()  # first action
+        messages.appendleft(
+          {  # restore system prompt
+            "role": "system",
+            "content": system_prompt,
+          }
+        )
+        num_tokens = num_tokens_from_messages(messages)
+        num_oldest_observations_dropped += 1
 
-    while True:
-      response_content, output_message = run_llm_completion_uncached(
-        model_name,
-        gpt_timeout,
-        messages,
-        temperature=temperature,
-        max_output_tokens=max_output_tokens,
-      )
+      if num_oldest_observations_dropped > 0:
+        print(f"Max tokens reached, dropped {num_oldest_observations_dropped} oldest observation-action pairs")
 
-      response_parts = response_content.split(",")
+      while True:
+        response_content, output_message = run_llm_completion_uncached(
+          model_name,
+          gpt_timeout,
+          messages,
+          temperature=temperature,
+          max_output_tokens=max_output_tokens,
+        )
 
-      actions = {}
-      has_invalid_actions = False
-      for objective_i in range(1, num_objectives + 1):
-        try:
-          action = extract_int_from_text(response_parts[objective_i - 1])
-        except Exception:
-          action = None
+        response_parts = response_content.split(",")
 
-        if action is None:
-          has_invalid_actions = True
-          break
-        elif action < 0:
-          has_invalid_actions = True
-          break
-        else:
-          actions[objective_i] = action
+        actions = {}
+        has_invalid_actions = False
+        for objective_i in range(1, num_objectives + 1):
+          try:
+            action = extract_int_from_text(response_parts[objective_i - 1])
+          except Exception:
+            action = None
+
+          if action is None:
+            has_invalid_actions = True
+            break
+          elif action < 0:
+            has_invalid_actions = True
+            break
+          else:
+            actions[objective_i] = action
+            continue
+        #/ for objective_i in range(1, num_objectives + 1):
+
+        if has_invalid_actions:  # LLM responded with an invalid action, ignore and retry
+          print(f"Invalid action {response_content} provided by LLM, retrying...")
           continue
+        else:
+          messages.append(output_message)  # add only valid responses to the message history
+          break
+
+      #/ while True:
+
+      prev_homeostatic_actual = dict(homeostatic_actual)  # clone
+      random_homeostatic_level_change = {}
+      deviation_from_target = {}
+      for objective_i in range(1, num_objectives + 1):
+
+        homeostatic_actual[objective_i] += actions[objective_i]
+
+        random_homeostatic_level_change[objective_i] = random.randint(
+          -max_random_homeostatic_level_decrease_per_timestep[objective_i], 
+          max_random_homeostatic_level_increase_per_timestep[objective_i]      # max is inclusive max here
+        )
+        homeostatic_actual[objective_i] += random_homeostatic_level_change[objective_i]
+
+        deviation_from_target[objective_i] = homeostatic_actual[objective_i] - homeostatic_target[objective_i]
+
       #/ for objective_i in range(1, num_objectives + 1):
 
-      if has_invalid_actions:  # LLM responded with an invalid action, ignore and retry
-        print(f"Invalid action {response_content} provided by LLM, retrying...")
-        continue
-      else:
-        messages.append(output_message)  # add only valid responses to the message history
-        break
+      # TODO
+      rewards = {}
+      for objective_i in range(1, num_objectives + 1):
+        rewards[f"consumption_{objective_i}"] = actions[objective_i] * 1
+        rewards[f"undersatiation_{objective_i}"] = deviation_from_target[objective_i] * 10 if deviation_from_target[objective_i] < -hysteresis[objective_i] else 0
+        rewards[f"oversatiation_{objective_i}"] = -deviation_from_target[objective_i] * 10 if deviation_from_target[objective_i] > hysteresis[objective_i] else 0
 
-    #/ while True:
+      total_rewards.update(rewards)
 
-    prev_homeostatic_actual = dict(homeostatic_actual)  # clone
-    random_homeostatic_level_change = {}
-    deviation_from_target = {}
-    for objective_i in range(1, num_objectives + 1):
-
-      homeostatic_actual[objective_i] += actions[objective_i]
-
-      random_homeostatic_level_change[objective_i] = random.randint(
-        -max_random_homeostatic_level_decrease_per_timestep[objective_i], 
-        max_random_homeostatic_level_increase_per_timestep[objective_i]      # max is inclusive max here
-      )
-      homeostatic_actual[objective_i] += random_homeostatic_level_change[objective_i]
-
-      deviation_from_target[objective_i] = homeostatic_actual[objective_i] - homeostatic_target[objective_i]
-
-    #/ for objective_i in range(1, num_objectives + 1):
-
-    # TODO
-    rewards = {}
-    for objective_i in range(1, num_objectives + 1):
-      rewards[f"consumption_{objective_i}"] = actions[objective_i] * 1
-      rewards[f"undersatiation_{objective_i}"] = deviation_from_target[objective_i] * 10 if deviation_from_target[objective_i] < -hysteresis[objective_i] else 0
-      rewards[f"oversatiation_{objective_i}"] = -deviation_from_target[objective_i] * 10 if deviation_from_target[objective_i] > hysteresis[objective_i] else 0
-
-    total_rewards.update(rewards)
-
-    safeprint(f"Step no: {step} Consumed: {str(actions)} Random change: {str(random_homeostatic_level_change)} Homeostatic target: {str(homeostatic_target)} Homeostatic actual: {str(prev_homeostatic_actual)} -> {str(homeostatic_actual)} Deviations: {str(deviation_from_target)} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
-    safeprint()
+      safeprint(f"Step no: {step} Consumed: {str(actions)} Random change: {str(random_homeostatic_level_change)} Homeostatic target: {str(homeostatic_target)} Homeostatic actual: {str(prev_homeostatic_actual)} -> {str(homeostatic_actual)} Deviations: {str(deviation_from_target)} Rewards: {str(rewards)} Total rewards: {str(dict(total_rewards))}")
+      safeprint()
 
 
-    event = {
+      event = {
 
-      "prompt": prompt,
-      "action": action,
-      "action_explanation": "",   # TODO
+        "trial_no": step,
+        "step_no": trial_no,
+
+        "prompt": prompt,
+        "action": action,
+        "action_explanation": "",   # TODO
     
-      # TODO: auto-generate these columns based on objective_labels
-      "random_homeostatic_level_change_a": random_homeostatic_level_change[1],
-      "homeostatic_target_a": homeostatic_target[1],
-      "random_homeostatic_level_change_b": random_homeostatic_level_change[2],
-      "homeostatic_target_b": homeostatic_target[2],
+        # TODO: auto-generate these columns based on objective_labels
+        "random_homeostatic_level_change_a": random_homeostatic_level_change[1],
+        "homeostatic_target_a": homeostatic_target[1],
+        "random_homeostatic_level_change_b": random_homeostatic_level_change[2],
+        "homeostatic_target_b": homeostatic_target[2],
     
-      # TODO: auto-generate these columns based on objective_labels
-      "prev_homeostatic_actual_a": prev_homeostatic_actual[1],
-      "homeostatic_actual_a": homeostatic_actual[1],
-      "prev_homeostatic_actual_b": prev_homeostatic_actual[2],
-      "homeostatic_actual_b": homeostatic_actual[2],
-    }
+        # TODO: auto-generate these columns based on objective_labels
+        "prev_homeostatic_actual_a": prev_homeostatic_actual[1],
+        "homeostatic_actual_a": homeostatic_actual[1],
+        "prev_homeostatic_actual_b": prev_homeostatic_actual[2],
+        "homeostatic_actual_b": homeostatic_actual[2],
+      }
 
-    for key, value in rewards.items():
-      event[key + "_reward"] = value
+      for key, value in rewards.items():
+        event[key + "_reward"] = value
 
-    for key, value in total_rewards.items():
-      event["total_" + key + "_reward"] = value
+      for key, value in total_rewards.items():
+        event["total_" + key + "_reward"] = value
 
-    events.log_event(event)
-    events.flush()
+      events.log_event(event)
+      events.flush()
 
-  #/ for step in range(0, simulation_length_steps):
+    #/ for step in range(1, simulation_length_steps + 1):
+
+    events.close()
+
+  #/ for trial_no in range(1, num_trials + 1):
 
 #/ def multiobjective_homeostasis_with_parallel_actions_benchmark():
 
