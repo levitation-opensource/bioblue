@@ -82,11 +82,12 @@ Run
 # Results
 
 The experimental outputs are in the subfolder `data`. There are five main sets of outputs by now:
-* GPT 4o-mini - sustainability
-* GPT 4o-mini - homeostasis
-* GPT 4o-mini - multi-objective homeostasis
-* Claude 3.5 haiku - sustainability
-* Claude 3.5 haiku - homeostasis
+* GPT 4o-mini - sustainability - failed partially
+* GPT 4o-mini - homeostasis - generally succeeded
+* GPT 4o-mini - multi-objective homeostasis - failed in various ways, sometimes extremely
+* Claude 3.5 haiku - sustainability - failed partially
+* Claude 3.5 haiku - homeostasis - generally succeeded
+* Claude 3.5 haiku - multi-objective homeostasis - failed
 Each benchmark has 10 trials, stored in separate TSV files.
 
 
