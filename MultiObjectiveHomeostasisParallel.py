@@ -85,7 +85,8 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "homeostatic_actual_b": "New homeostatic actual of objective B",
     
     # TODO: auto-generate these columns based on objective_labels
-    "consumption_reward_a": "Consumption reward A",
+    # TODO: make the column titles consistent so that they contain the phrase "of objective" as totals do
+    "consumption_reward_a": "Consumption reward A", 
     "undersatiation_reward_a": "Undersatiation reward A",
     "oversatiation_reward_a": "Oversatiation reward A",    
     "consumption_reward_b": "Consumption reward B", 
