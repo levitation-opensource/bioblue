@@ -20,6 +20,8 @@ from openai import OpenAI
 from anthropic import Anthropic
 
 from Utilities import Timer, wait_for_enter
+# from dotenv import load_dotenv
+# load_dotenv()  # Load variables from .env file
 
 import configparser
 import ast
@@ -271,12 +273,13 @@ def get_max_tokens_for_model(model_name):
   is_claude = model_name.startswith('claude-')
   
   if is_claude:
-       
+    
     # Adding Claude model token limits
     claude_limits = {
       'claude-3-opus-20240229': 200000,
       'claude-3-sonnet-20240229': 200000,
       'claude-3-5-sonnet-latest': 200000,
+      'claude-3-5-haiku-20241022': 200000,
       'claude-3-5-haiku-latest': 200000,
       'claude-2.1': 200000,
       'claude-2.0': 100000,
@@ -286,6 +289,7 @@ def get_max_tokens_for_model(model_name):
       max_tokens = claude_limits[model_name]
     else:
       max_tokens = 4096
+      print('MAX TOKENS NOT FOUND FOR CLAUDE MODEL:', model_name, 'USING DEFAULT:', max_tokens)
 
   # OpenAI models # TODO: refactor to use dictionary like claude's branch uses
   elif model_name == "o1":  # https://platform.openai.com/docs/models/#o1
@@ -391,7 +395,17 @@ def run_llm_completion_uncached(
   is_claude = model_name.startswith('claude-')
 
   if is_claude:
-    num_input_tokens = 0 # TODO
+    system_message = next((msg['content'] for msg in messages if msg['role'] == 'system'), None)
+    # Build the messages for Claude
+    claude_messages = []
+    claude_messages = [msg for msg in messages if msg['role'] != 'system']
+    response = claude_client.messages.count_tokens(
+    model=model_name,
+    system=system_message,
+    messages=claude_messages,
+    )
+    num_input_tokens = json.loads(response.json()).get("input_tokens") # TODO
+    # num_input_tokens = 0  # Placeholder as Claude handles this internally
   else:
     num_input_tokens = num_tokens_from_messages(
       messages, model_name
@@ -424,9 +438,11 @@ def run_llm_completion_uncached(
 
   output_message = {"role": "assistant", "content": response_content}
   if is_claude:
-    #TODO: check if this is correct
-    num_output_tokens = 0  # Placeholder as Claude handles this internally
-    num_total_tokens = 0  # Placeholder
+    # print(f"Response Content Format: {type(response_content)}, Content: {response_content}")
+    # #TODO: check if accurate - seems to overestimate tokens
+    num_output_tokens = json.loads(response.json()).get("input_tokens")
+    num_total_tokens = num_input_tokens + num_output_tokens
+    
   else:
     num_output_tokens = num_tokens_from_messages(
       [output_message], model_name
