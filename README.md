@@ -119,7 +119,7 @@ This project is licensed under the Mozilla Public License 2.0. You are free to u
 
 **Attribution Requirement**: If you use this benchmark suite, please cite the source as follows:
 
-Roland Pihlakas, Shruti Datta Gupta, Sruthi Kuriakose. BioBlue: Biologically and economically aligned multi-objective multi-agent AI safety benchmarks with simplified observation format. Jan-Feb 2025 (https://github.com/levitation-opensource/bioblue).
+Roland Pihlakas, Shruti Datta Gupta, Sruthi Kuriakose. BioBlue: Biologically and economically aligned AI safety benchmarks for LLM-s with simplified observation format. Jan-Feb 2025 (https://github.com/levitation-opensource/bioblue).
 
 **Use of Entire Suite**: We encourage the inclusion of the entire benchmark suite in derivative works to maintain the integrity and comprehensiveness of AI safety assessments.
 
