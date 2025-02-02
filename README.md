@@ -100,6 +100,9 @@ Can be found in Google Docs:
 ... or as a PDF file in this repo:
 <br>[BioBlue - Biologically and economically aligned benchmarks for LLMs.pdf](https://github.com/levitation-opensource/bioblue/blob/main/BioBlue%20-%20Biologically%20and%20economically%20aligned%20AI%20safety%20benchmarks%20for%20LLMs.pdf)
 
+Slides:
+<br>[https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p](https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p)
+
 
 # Inspiration
 
