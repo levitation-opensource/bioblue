@@ -81,7 +81,7 @@ def completion_with_backoff(
         max_tokens=kwargs.get('max_tokens', 1024),
         temperature=kwargs.get('temperature', 0.5)
       )
-      return (response.content[0].text, response.stop_reason)
+      return (response.content[0].text, response.stop_reason, response.usage.input_tokens, response.usage.output_tokens)
       
     else:
 
@@ -116,7 +116,7 @@ def completion_with_backoff(
       response_content = openai_response["choices"][0]["message"]["content"]
       finish_reason = openai_response["choices"][0]["finish_reason"]
 
-      return (response_content, finish_reason)
+      return (response_content, finish_reason, None, None)  # TODO: input_tokens, output_tokens
 
   except Exception as ex: 
     t = type(
@@ -427,7 +427,7 @@ def run_llm_completion_uncached(
 
   time_start = time.time()
 
-  (response_content, finish_reason) = completion_with_backoff(
+  (response_content, finish_reason, input_tokens, output_tokens) = completion_with_backoff(
     gpt_timeout,
     model=model_name,
     messages=messages,
@@ -448,10 +448,10 @@ def run_llm_completion_uncached(
 
   output_message = {"role": "assistant", "content": response_content}
   if is_claude:
-    #TODO: check if this is correct
-    num_output_tokens = 0  # Placeholder as Claude handles this internally
-    num_total_tokens = 0  # Placeholder
+    num_output_tokens = output_tokens
+    num_total_tokens = input_tokens + output_tokens
   else:
+    # TODO: use input_tokens, output_tokens variables
     num_output_tokens = num_tokens_from_messages(
       [output_message], model_name
     )  # TODO: a more precise token count is already provided by OpenAI, no need to recalculate it here
