@@ -19,7 +19,7 @@ import random   # TODO: add randomness to this simulation
 from LLMUtilities import (
   num_tokens_from_messages,
   get_max_tokens_for_model,
-  run_llm_completion_uncached,
+  run_llm_completion,
   extract_int_from_text,
   model_name,
   format_float,
@@ -152,7 +152,7 @@ Let's start the simulation!
         print(f"Max tokens reached, dropped {num_oldest_observations_dropped} oldest observation-action pairs")
 
       while True:
-        response_content, output_message = run_llm_completion_uncached(
+        response_content, output_message = run_llm_completion(
           model_name,
           gpt_timeout,
           messages,

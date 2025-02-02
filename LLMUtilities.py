@@ -409,7 +409,7 @@ def get_max_tokens_for_model(model_name):
 
 
 # TODO: caching support
-def run_llm_completion_uncached(
+def run_llm_completion(
   model_name, gpt_timeout, messages, temperature=0, max_output_tokens=100
 ):
   is_claude = model_name.startswith('claude-')
@@ -463,7 +463,7 @@ def run_llm_completion_uncached(
 
   return response_content, output_message
 
-# / def run_llm_completion_uncached(model_name, gpt_timeout, messages, temperature = 0, sample_index = 0):
+# / def run_llm_completion(model_name, gpt_timeout, messages, temperature = 0, sample_index = 0):
 
 
 def extract_int_from_text(text):
