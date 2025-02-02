@@ -68,6 +68,8 @@ You can download the latest installer from https://www.python.org/downloads/rele
 
 ## Executing `BioBlue`
 
+Choose model in `config.ini`.
+
 Set environment variable:
 `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`.
 
@@ -79,7 +81,7 @@ Run
 
 # Results
 
-The experimental outputs are in the subfolder data. There are five main sets of outputs by now:
+The experimental outputs are in the subfolder `data`. There are five main sets of outputs by now:
 * GPT 4o-mini - sustainability
 * GPT 4o-mini - homeostasis
 * GPT 4o-mini - multi-objective homeostasis
