@@ -94,8 +94,11 @@ There are six main sets of outputs by now:
 
 # The project document
 
-Can be found here:
-https://docs.google.com/document/d/1VC0UMtgwfWZzx_pJb-kEyKoCewdyj5Qu2Tr8d0DeaSQ/edit?tab=t.0
+Can be found in Google Docs:
+<br>[BioBlue - Biologically and economically aligned benchmarks for LLMs](https://docs.google.com/document/d/1VC0UMtgwfWZzx_pJb-kEyKoCewdyj5Qu2Tr8d0DeaSQ/edit?tab=t.0)
+
+... or as a PDF file in this repo:
+<br>[BioBlue - Biologically and economically aligned benchmarks for LLMs.pdf](https://github.com/levitation-opensource/bioblue/blob/main/BioBlue%20-%20Biologically%20and%20economically%20aligned%20AI%20safety%20benchmarks%20for%20LLMs.pdf)
 
 
 # Inspiration
