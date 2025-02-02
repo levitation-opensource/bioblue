@@ -90,6 +90,12 @@ The experimental outputs are in the subfolder `data`. There are five main sets o
 Each benchmark has 10 trials, stored in separate TSV files.
 
 
+# The project document
+
+Can be found here:
+https://docs.google.com/document/d/1VC0UMtgwfWZzx_pJb-kEyKoCewdyj5Qu2Tr8d0DeaSQ/edit?tab=t.0
+
+
 # Inspiration
 
 * A working paper that inspired the creation of this repo: Pihlakas, R & Pyykkö, J. "From homeostasis to resource sharing: Biologically and economically compatible multi-objective multi-agent AI safety benchmarks". Arxiv (2024). https://arxiv.org/abs/2410.00081
