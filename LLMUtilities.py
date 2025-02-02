@@ -79,7 +79,7 @@ def completion_with_backoff(
         system=system_message,
         messages=claude_messages,
         max_tokens=kwargs.get('max_tokens', 1024),
-        temperature=kwargs.get('temperature', 0)
+        temperature=kwargs.get('temperature', 0.5)
       )
       return (response.content[0].text, response.stop_reason)
       
@@ -175,92 +175,100 @@ def get_encoding_for_model(model):
 # https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
 def num_tokens_from_messages(messages, model, encoding=None):
   """Return the number of tokens used by a list of messages."""
+  
+  is_claude = model_name.startswith('claude-')
+  
+  if is_claude:
 
-  if encoding is None:
-    encoding = get_encoding_for_model(model)
+    return 0    # TODO
 
-  if model in {
-    "gpt-3.5-turbo-0125",
-    "gpt-3.5-turbo-0613",
-    "gpt-3.5-turbo-16k-0613",
-    "gpt-4-0314",
-    "gpt-4-0613",
-    "gpt-4-32k-0314",
-    "gpt-4-32k-0613",
-    "gpt-4o-mini-2024-07-18",
-    "gpt-4o-2024-08-06",
-  }:
-    tokens_per_message = 3
-    tokens_per_name = 1
+  else: # OpenAI
 
-  elif model == "gpt-3.5-turbo-0301":
-    tokens_per_message = (
-      4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
-    )
-    tokens_per_name = -1  # if there's a name, the role is omitted
+    if encoding is None:
+      encoding = get_encoding_for_model(model)
 
-  elif "gpt-3.5-turbo-16k" in model:  # roland
-    # print("Warning: gpt-3.5-turbo-16k may update over time. Returning num tokens assuming gpt-3.5-turbo-16k-0613.")
-    return num_tokens_from_messages(
-      messages, model="gpt-3.5-turbo-16k-0613", encoding=encoding
-    )
+    if model in {
+      "gpt-3.5-turbo-0125",
+      "gpt-3.5-turbo-0613",
+      "gpt-3.5-turbo-16k-0613",
+      "gpt-4-0314",
+      "gpt-4-0613",
+      "gpt-4-32k-0314",
+      "gpt-4-32k-0613",
+      "gpt-4o-mini-2024-07-18",
+      "gpt-4o-2024-08-06",
+    }:
+      tokens_per_message = 3
+      tokens_per_name = 1
 
-  elif "gpt-3.5-turbo" in model:
-    # print("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
-    return num_tokens_from_messages(
-      messages, model="gpt-3.5-turbo-0613", encoding=encoding
-    )
+    elif model == "gpt-3.5-turbo-0301":
+      tokens_per_message = (
+        4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
+      )
+      tokens_per_name = -1  # if there's a name, the role is omitted
 
-  elif "gpt-4-32k" in model:  # roland
-    # print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-32k-0613.")
-    return num_tokens_from_messages(
-      messages, model="gpt-4-32k-0613", encoding=encoding
-    )
+    elif "gpt-3.5-turbo-16k" in model:  # roland
+      # print("Warning: gpt-3.5-turbo-16k may update over time. Returning num tokens assuming gpt-3.5-turbo-16k-0613.")
+      return num_tokens_from_messages(
+        messages, model="gpt-3.5-turbo-16k-0613", encoding=encoding
+      )
 
-  elif "gpt-4o-mini" in model:
-    # print("Warning: gpt-4o-mini may update over time. Returning num tokens assuming gpt-4o-mini-2024-07-18.")
-    return num_tokens_from_messages(
-      messages, model="gpt-4o-mini-2024-07-18", encoding=encoding
-    )
+    elif "gpt-3.5-turbo" in model:
+      # print("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
+      return num_tokens_from_messages(
+        messages, model="gpt-3.5-turbo-0613", encoding=encoding
+      )
 
-  elif "gpt-4o" in model:
-    # print("Warning: gpt-4o and gpt-4o-mini may update over time. Returning num tokens assuming gpt-4o-2024-08-06.")
-    return num_tokens_from_messages(
-      messages, model="gpt-4o-2024-08-06", encoding=encoding
-    )
+    elif "gpt-4-32k" in model:  # roland
+      # print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-32k-0613.")
+      return num_tokens_from_messages(
+        messages, model="gpt-4-32k-0613", encoding=encoding
+      )
 
-  elif "gpt-4" in model:
-    # print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
-    return num_tokens_from_messages(messages, model="gpt-4-0613", encoding=encoding)
+    elif "gpt-4o-mini" in model:
+      # print("Warning: gpt-4o-mini may update over time. Returning num tokens assuming gpt-4o-mini-2024-07-18.")
+      return num_tokens_from_messages(
+        messages, model="gpt-4o-mini-2024-07-18", encoding=encoding
+      )
 
-  else:
-    # raise NotImplementedError(
-    #  f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens."""
-    # )
-    print(f"num_tokens_from_messages() is not implemented for model {model}")
-    # just take some conservative assumptions here
-    tokens_per_message = 4
-    tokens_per_name = 1
+    elif "gpt-4o" in model:
+      # print("Warning: gpt-4o and gpt-4o-mini may update over time. Returning num tokens assuming gpt-4o-2024-08-06.")
+      return num_tokens_from_messages(
+        messages, model="gpt-4o-2024-08-06", encoding=encoding
+      )
 
-  num_tokens = 0
-  for message in messages:
-    num_tokens += tokens_per_message
+    elif "gpt-4" in model:
+      # print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
+      return num_tokens_from_messages(messages, model="gpt-4-0613", encoding=encoding)
 
-    for key, value in message.items():
-      if key == "weight":
-        continue
+    else:
+      # raise NotImplementedError(
+      #  f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens."""
+      # )
+      print(f"num_tokens_from_messages() is not implemented for model {model}")
+      # just take some conservative assumptions here
+      tokens_per_message = 4
+      tokens_per_name = 1
 
-      num_tokens += len(encoding.encode(value))
-      if key == "name":
-        num_tokens += tokens_per_name
+    num_tokens = 0
+    for message in messages:
+      num_tokens += tokens_per_message
 
-    # / for key, value in message.items():
+      for key, value in message.items():
+        if key == "weight":
+          continue
 
-  # / for message in messages:
+        num_tokens += len(encoding.encode(value))
+        if key == "name":
+          num_tokens += tokens_per_name
 
-  num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
+      # / for key, value in message.items():
 
-  return num_tokens
+    # / for message in messages:
+
+    num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
+
+    return num_tokens
 
 # / def num_tokens_from_messages(messages, model, encoding=None):
 
@@ -274,18 +282,34 @@ def get_max_tokens_for_model(model_name):
        
     # Adding Claude model token limits
     claude_limits = {
-      'claude-3-opus-20240229': 200000,
-      'claude-3-sonnet-20240229': 200000,
+      # https://aws.amazon.com/bedrock/claude/
+      # TODO: check whether the listing below is complete
+
       'claude-3-5-sonnet-latest': 200000,
       'claude-3-5-haiku-latest': 200000,
+
+      'claude-3-5-sonnet-20241022': 200000,
+      'claude-3-5-haiku-20241022': 200000,
+
+      'claude-3-opus-latest': 200000,
+      'claude-3-sonnet-latest': 200000,
+      'claude-3-haiku-latest': 200000,
+
+      'claude-3-opus-20240229': 200000,
+      'claude-3-sonnet-20240229': 200000,
+
+      'claude-3-haiku-20240307': 200000,
+
       'claude-2.1': 200000,
       'claude-2.0': 100000,
+      'claude-instant': 100000,
     }
     
     if model_name in claude_limits:
       max_tokens = claude_limits[model_name]
     else:
-      max_tokens = 4096
+      assert False  # you probably have to add your model name to above list
+      max_tokens = 100000 # 4096
 
   # OpenAI models # TODO: refactor to use dictionary like claude's branch uses
   elif model_name == "o1":  # https://platform.openai.com/docs/models/#o1

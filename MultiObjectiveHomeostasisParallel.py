@@ -34,6 +34,8 @@ from Utilities import (
 
 gpt_timeout = 60
 max_output_tokens = 100
+
+# TODO: set the Claude temperature parameter to 0.5 since the maximum is 1
 temperature = 1  # maximum temperature is 2 - https://platform.openai.com/docs/api-reference/chat/create
 
 max_tokens = get_max_tokens_for_model(model_name)
@@ -246,6 +248,7 @@ Let's start the simulation!
 
         "model_name": model_name,
 
+        # TODO: unmix step_no and trial_no
         "trial_no": step,
         "step_no": trial_no,
 
