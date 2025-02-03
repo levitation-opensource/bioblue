@@ -8,7 +8,13 @@ The benchmarks were implemented in a text-only environment. The environments are
 
 The current work is partially inspired from a set of more complex environments present in a gridworlds-based benchmark suite: Roland Pihlakas and Joel Pyykkö. From homeostasis to resource sharing: Biologically and economically compatible multi-objective multi-agent AI safety benchmarks. Arxiv, a working paper, September 2024 (https://arxiv.org/abs/2410.00081 and https://github.com/aintelope/biological-compatibility-benchmarks).
 
-TODO: add motivational text why purely text-based environments fit better into LLM context window and how it is also cheaper to execute.
+
+## Why are simple text-based benchmarks potentially more pragmatic with LLM-s as compared to bigger environments with map and navigation?
+
+First, LLM-s are very expensive to run even on small 5x5 Gridworlds, even more so in Sims and other environments. Based on preliminary testing in aintelope biological compatibility benchmarks (https://github.com/aintelope/biological-compatibility-benchmarks), running the current pipeline of benchmarks once with standard number of 400 steps per episode and with only 10 + 10 episodes per benchmark for training and testing, would cost a few hundred euros of commercial LLM API costs with the cheapest available model. I have heard that running LLM simulations on Sims game (https://github.com/joonspk-research/generative_agents) would cost even thousands. Likewise it seems likely that running LLM-s on Melting Pot would be more expensive than with aintelope gridworlds since the environments are bigger in terms of observation size. Making the simulations too expensive would make the AI safety an elitist topic. Many people would not run the benchmarks because of the cost reason. Then the benchmarks are less helpful when not used and promoted.
+
+Secondly, there is an issue with LLM-s context window. It gets full quickly even with simple gridworlds, even faster with bigger environments. When the context window is full, the model will not behave adequately.
+
 
 ## Project setup
 
