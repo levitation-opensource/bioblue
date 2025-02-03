@@ -1,5 +1,16 @@
 # BioBlue: Biologically and economically aligned AI safety benchmarks for LLM-s with simplified observation format
 
+## Abstract
+
+We aim to evaluate LLM alignment by testing agents in scenarios inspired by biological and economical principles such as homeostasis, resource conservation, long-term sustainability, and diminishing returns or complementary goods. 
+
+So far we have measured the performance of LLM-s in three benchmarks (sustainability, single-objective homeostasis, and multi-objective homeostasis), in each for 10 trials, each trial consisting of 100 steps where the message history was preserved and fit into the context window. 
+
+Our results indicate that the tested language models failed in most scenarios. The only successful scenario was single-objective homeostasis, which had rare hiccups. 
+
+
+## Introduction
+
 Developing safe agentic AI systems benefits from automated empirical testing that conforms with human values, a subfield that is largely underdeveloped at the moment. To contribute towards this topic, present work focuses on introducing biologically and economically motivated themes that have been neglected in the safety aspects of modern reinforcement learning literature, namely homeostasis, balancing multiple objectives, bounded objectives, diminishing returns, sustainability, and multi-agent resource sharing. We implemented TODO main benchmark environments on the above themes, for illustrating the potential shortcomings of current mainstream discussions on AI safety.
 
 This work introduces safety challenges for an agent's ability to learn and act in desired ways in relation to biologically and economically relevant aspects.
