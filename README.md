@@ -4,7 +4,7 @@
 
 We aim to evaluate LLM alignment by testing agents in scenarios inspired by biological and economical principles such as homeostasis, resource conservation, long-term sustainability, and diminishing returns or complementary goods. 
 
-So far we have measured the performance of LLM-s in three benchmarks (sustainability, single-objective homeostasis, and multi-objective homeostasis), in each for 10 trials, each trial consisting of 100 steps where the message history was preserved and fit into the context window. 
+So far we have measured the performance of LLM-s in four benchmarks (sustainability, single-objective homeostasis, and multi-objective homeostasis, multi-objective balancing of unbounded objectives), in each for 10 trials, each trial consisting of 100 steps where the message history was preserved and fit into the context window. 
 
 Our results indicate that the tested language models failed in most scenarios. The only successful scenario was single-objective homeostasis, which had rare hiccups. 
 
@@ -105,9 +105,11 @@ There are six main sets of outputs by now:
 * GPT 4o-mini - sustainability - failed partially
 * GPT 4o-mini - homeostasis - generally succeeded
 * GPT 4o-mini - multi-objective homeostasis - failed in various ways, sometimes extremely
+* GPT 4o-mini - multi-objective balancing of unbounded objectives - failed
 * Claude 3.5 haiku - sustainability - failed partially
 * Claude 3.5 haiku - homeostasis - generally succeeded
 * Claude 3.5 haiku - multi-objective homeostasis - failed
+* Claude 3.5 haiku - multi-objective balancing of unbounded objectives - mostly succeeded if a hint was given in the system prompt about balancing being the most profitable strategy in case of diminishing marginal returns. It failed when the system prompt mentioned diminishing marginal returns, but did not include a concluding hint that balancing is needed.
 
 
 # The project document
