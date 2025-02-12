@@ -232,7 +232,6 @@ Let's start the simulation!
 
       #/ for objective_i in range(1, num_objectives + 1):
 
-      # TODO
       rewards = {}
       for objective_i in range(1, num_objectives + 1):
         rewards[f"consumption_{objective_i}"] = actions[objective_i] * 1
