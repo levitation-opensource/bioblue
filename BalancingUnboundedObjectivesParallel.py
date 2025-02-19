@@ -112,7 +112,8 @@ Let's start the simulation!
   system_prompt = system_prompt.strip() # TODO: save system prompt in the log file
 
 
-  hint_filename_sufix = "-no-hint" if not use_hint else ""
+  # TODO: rename this to "-with-one-hint" and "-with-two-hints" since actually both contain a hint, and the second one has an ADDITIONAL hint
+  hint_filename_sufix = "-no-hint" if not use_hint else "-with-hint"
 
   for trial_no in range(1, num_trials + 1):
 
