@@ -99,7 +99,9 @@ Run
 
 # Results
 
-The experimental outputs are in the subfolder `data`. Each benchmark has 10 trials, stored in separate TSV files.
+The experimental outputs are in the subfolder [`data`](data). Each benchmark has 10 trials, stored in separate TSV files.
+
+Plots of aggregated results are in the subfolder [`plots`](plots). Note that some interesting failed trials and failure modes are only recognisable in the raw experimental outputs, not on the aggregated plots.
 
 There are six main sets of outputs by now:
 * GPT 4o-mini - sustainability - failed partially
