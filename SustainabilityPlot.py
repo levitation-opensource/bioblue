@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import glob
 
-def generate_plot(data1, data2, xlabel, ylabel, data1_legend, data2_legend, plot_title): 
+def generate_plot(data1, data2, xlabel, ylabel, data1_legend, data2_legend, plot_title, save_filename): 
  
     x_values = list(data1.keys())  
     y_values1 = list(data1.values())  
@@ -21,29 +21,14 @@ def generate_plot(data1, data2, xlabel, ylabel, data1_legend, data2_legend, plot
 
     plt.legend()
     
+    plt.savefig(save_filename + ".png", dpi=200)
     plt.show()
 
 
 def gpt4o_results():
     df = pd.DataFrame() 
 
-    # current_dir = os.getcwd() 
-    # gpt4o_base_path = os.path.join(current_dir, '..', '..', 'data')
-    # gpt4o_base_path += '/sustainability_gpt-4o-mini_2025_02_01_'
-
-    # sustainability_log_list = [
-    #     '20_22_13_475904.tsv',
-    #     '20_25_29_071555.tsv',
-    #     '20_28_01_340874.tsv',
-    #     '20_31_29_847955.tsv',             
-    #     '20_33_53_727289.tsv',             
-    #     '20_36_23_907161.tsv',             
-    #     '20_39_13_750999.tsv',
-    #     '20_41_53_835899.tsv',             
-    #     '20_44_29_276347.tsv',
-    #     '20_47_02_537301.tsv'
-    # ]
-    sustainability_log_list = glob.glob(os.path.join("data", "sustainability_gpt-4o-mini_*.tsv"))
+    sustainability_log_list = glob.glob(os.path.join("data", "sustainability_gpt-4o-mini_2025_02_02_*.tsv"))
 
     for i, file_path in enumerate(sustainability_log_list):
         # file_path = gpt4o_base_path + file
@@ -70,23 +55,7 @@ def gpt4o_results():
 def claude_results():
     df = pd.DataFrame() 
 
-    # current_dir = os.getcwd() 
-    # claude_base_path = os.path.join(current_dir, '..', '..', 'data')
-    # claude_base_path += '/sustainability_claude-3-5-haiku-latest_2025_02_01_'
-
-    # sustainability_log_list = [
-    #     '19_44_31_302947.tsv',
-    #     '19_49_28_429212.tsv',
-    #     '19_55_09_324643.tsv',
-    #     '20_00_52_471423.tsv',
-    #     '20_06_37_162068.tsv',
-    #     '20_12_20_606011.tsv',
-    #     '20_17_58_611178.tsv',
-    #     '20_23_47_577616.tsv',
-    #     '20_29_31_712147.tsv',
-    #     '20_35_11_344604.tsv'
-    # ]
-    sustainability_log_list = glob.glob(os.path.join("data", "sustainability_claude-3-5-haiku-*_*.tsv"))
+    sustainability_log_list = glob.glob(os.path.join("data", "sustainability_claude-3-5-haiku-latest_2025_02_03_*.tsv"))
 
     for i, file_path in enumerate(sustainability_log_list):
         # file_path = claude_base_path + file
@@ -115,10 +84,10 @@ gpt4o_consumption_reward, gpt4o_total_consumption_reward, gpt4o_instability_rewa
 claude_consumption_reward, claude_total_consumption_reward, claude_instability_reward, claude_total_instability_reward = claude_results()
 
 
-generate_plot(gpt4o_consumption_reward, claude_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Consumption reward for Sustainability benchmark (Avg over 10 trials)')
+generate_plot(gpt4o_consumption_reward, claude_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Consumption reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability consumption reward')
 
-generate_plot(gpt4o_total_consumption_reward, claude_total_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total consumption reward for Sustainability benchmark (Avg over 10 trials)')
+generate_plot(gpt4o_total_consumption_reward, claude_total_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total consumption reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability total consumption reward')
 
-generate_plot(gpt4o_instability_reward, claude_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Instability reward for Sustainability benchmark (Avg over 10 trials)')
+generate_plot(gpt4o_instability_reward, claude_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Instability reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability instability penalty')
 
-generate_plot(gpt4o_total_instability_reward, claude_total_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total instability reward for Sustainability benchmark (Avg over 10 trials)')
+generate_plot(gpt4o_total_instability_reward, claude_total_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total instability reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability total instability penalty')

@@ -33,22 +33,6 @@ def generate_plot(data1A, data2A, data1B, data2B, xlabel, ylabel, data1_legend, 
 def results():
     df = df = pd.DataFrame() 
 
-    # current_dir = os.getcwd() 
-    # base_path = os.path.join(current_dir, '..', '..', 'data')
-    # base_path += '/homeostasis_gpt-4o-mini_2025_02_01_'
-
-    # homeostasis_log_list = [
-    #     '19_56_29_572268.tsv',
-    #     '19_59_28_270616.tsv',
-    #     '20_02_22_963977.tsv',
-    #     '20_05_19_378875.tsv',
-    #     '20_08_11_822824.tsv',
-    #     '19_40_04_733656.tsv',
-    #     '19_43_36_412572.tsv',
-    #     '19_48_00_192665.tsv',
-    #     '19_50_50_744041.tsv',
-    #     '19_53_42_303388.tsv'
-    # ]
     homeostasis_log_list = glob.glob(os.path.join("data", "multiobjective-homeostasis_gpt-4o-mini_*.tsv"))
 
     for i, file_path in enumerate(homeostasis_log_list):
@@ -114,23 +98,6 @@ def results():
 def claude_results():
     df = df = pd.DataFrame() 
 
-    # base_path = './../../data/homeostasis_claude-3-5-haiku-latest_2025_02_01_'
-    # current_dir = os.getcwd() 
-    # claude_base_path = os.path.join(current_dir, '..', '..', 'data')
-    # claude_base_path += '/homeostasis_claude-3-5-haiku-latest_2025_02_01_'
-
-    # homeostasis_log_list = [
-    #     '12_21_34_207921.tsv',
-    #     '12_26_37_443013.tsv',
-    #     '12_32_41_710303.tsv',
-    #     '12_38_43_054654.tsv',
-    #     '12_44_45_338563.tsv',
-    #     '12_50_55_104330.tsv',
-    #     '12_56_56_388525.tsv',
-    #     '13_03_06_540040.tsv',
-    #     '13_08_55_592053.tsv',
-    #     '13_14_58_760716.tsv' 
-    # ]
     homeostasis_log_list = glob.glob(os.path.join("data", "multiobjective-homeostasis_claude-3-5-haiku-*_*.tsv"))
 
     for i, file_path in enumerate(homeostasis_log_list):
