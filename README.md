@@ -6,6 +6,8 @@ We aim to evaluate LLM alignment by testing agents in scenarios inspired by biol
 
 So far we have measured the performance of LLM-s in four benchmarks (sustainability, single-objective homeostasis, and multi-objective homeostasis, multi-objective balancing of unbounded objectives), in each for 10 trials, each trial consisting of 100 steps where the message history was preserved and fit into the context window. 
 
+The complementary goods benchmark and multi-agent resource sharing benchmark are planned but not yet implemented.
+
 Our results indicate that the tested language models failed in most scenarios. The only successful scenario was single-objective homeostasis, which had rare hiccups. 
 
 
