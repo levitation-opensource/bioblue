@@ -10,6 +10,8 @@ The complementary goods benchmark and multi-agent resource sharing benchmark are
 
 Our results indicate that the tested language models failed in most scenarios. The only successful scenario was single-objective homeostasis, which had rare hiccups. 
 
+The LLM-s had trouble with multi-objective scenarios. With a single objective they do well or at least relatively ok. With multiple objectives (even with just two main objectives), the model can run successfully for quite some time, and then start failing and not recovering anymore, sometimes taking extreme actions. In all cases this happened long before context window would get full. This indicates that the models do understand the task, but they have incompatible tendencies and eventually the tendencies will take over. There are various failure modes.
+
 
 ## Introduction
 
@@ -27,6 +29,21 @@ The current work is partially inspired from a set of more complex environments p
 First, LLM-s are very expensive to run even on small 5x5 Gridworlds, even more so in Sims and other environments. Based on preliminary testing in aintelope biological compatibility benchmarks (https://github.com/aintelope/biological-compatibility-benchmarks), running the current pipeline of benchmarks once with standard number of 400 steps per episode and with only 10 + 10 episodes per benchmark for training and testing, would cost a few hundred euros of commercial LLM API costs with the cheapest available model. I have heard that running LLM simulations on Sims game (https://github.com/joonspk-research/generative_agents) would cost even thousands. Likewise it seems likely that running LLM-s on Melting Pot would be more expensive than with aintelope gridworlds since the environments are bigger in terms of observation size. Making the simulations too expensive would make the AI safety an elitist topic. Many people would not run the benchmarks because of the cost reason. Then the benchmarks are less helpful when not used and promoted.
 
 Secondly, there is an issue with LLM-s context window. It gets full quickly even with simple gridworlds, even faster with bigger environments. When the context window is full, the model will not behave adequately. Perhaps that is the hidden reason why lions share of current evals are using isolated questions, not long-running scenarios?
+
+Most importantly, it is too early to claim that LLM-s supersede RL. They seem to have different strengths. Yes, LLM-s have better starting point for quick development and training. But to get maximum performance in specialised applications, one may still prefer RL.
+
+Moreover, LLM-s use RL as well, this holds especially for the reasoning models.
+
+> The revenge of RL safety. After LLMs ate the field, the old safety theory (which thought in terms of RL) was said to be less relevant.[1] But the training process for o1 / R1 involves more RL than RLHF does, which is pretty worrying. o3 involves more RL still.
+> <br>Sources: https://www.lesswrong.com/posts/fAW6RXLKTLHC3WXkS/shallow-review-of-technical-ai-safety-2024
+> <br>[1] Vanessa Kosoy notes: "IMHO this is a very myopic view. I don't believe plain foundation models will be transformative, and even in the world in which they will be transformative, it will be due to implicitly doing RL 'under the hood'."
+> <br>[https://x.com/xuanalogue/status/1870316079689703475](https://x.com/xuanalogue/status/1870316079689703475)
+> <br>[https://www.alexirpan.com/2024/12/04/late-o1-thoughts.html](https://www.alexirpan.com/2024/12/04/late-o1-thoughts.html)
+> <br>[https://www.lesswrong.com/posts/BEFbC8sLkur7DGCYB/o1-is-a-bad-idea](https://www.lesswrong.com/posts/BEFbC8sLkur7DGCYB/o1-is-a-bad-idea)
+
+Finally, there are likely shared weaknesses between LLM-s and RL, so it is meaningful to explore these weaknesses with less confounded as well as cheaper approaches first. If LLM-s and RL cannot solve simple safety benchmarks then why would we discuss more confounded scenarios? I totally agree that context is essential in proper AI decision making. But currently it seems many complex benchmarks add more capabilities related fluff than just the necessary context info that would be essential for alignment.
+
+As a sanity check for LLM-s and to reduce costs, We have created an alternative set of very simple benchmark implementations. These are on the same themes as the [aintelope biological and economical alignment benchmarks](https://github.com/aintelope/biological-compatibility-benchmarks), but do not involve 2D map and navigation. There are only consumption actions where the model chooses how much to consume. My preliminary results show that LLM-s do fail even in these simple benchmarks.
 
 
 ## Project setup
