@@ -16,6 +16,7 @@ import httpx
 import json
 import json_tricks
 
+import openai
 from openai import OpenAI
 from anthropic import Anthropic
 
@@ -142,14 +143,17 @@ def completion_with_backoff(
       else:
         print("Response format error, giving up")
 
+    elif t is openai.RateLimitError:    # TODO: add support for Claude rate limit error as well
+      if attempt_number < max_attempt_number:
+        print("Rate limit error, retrying...")
+      else:
+        wait_for_enter("Rate limit error. Press any key to retry")
+
     else:  # / if (t ishttpcore.ReadTimeout
       msg = f"{str(ex)}\n{traceback.format_exc()}"
       print(msg)
 
-      if attempt_number < max_attempt_number:
-        wait_for_enter("Press any key to retry")
-      else:
-        print("Giving up")
+      wait_for_enter("Press any key to retry")
 
     # / if (t ishttpcore.ReadTimeout
 

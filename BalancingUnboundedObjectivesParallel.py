@@ -169,7 +169,7 @@ Let's start the simulation!
             "content": system_prompt,
           }
         )
-        num_tokens = num_tokens_from_messages(messages)
+        num_tokens = num_tokens_from_messages(messages, model_name)
         num_oldest_observations_dropped += 1
 
       if num_oldest_observations_dropped > 0:
