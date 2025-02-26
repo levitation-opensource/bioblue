@@ -30,7 +30,10 @@ First, LLM-s are very expensive to run even on small 5x5 gridworlds, even more s
 
 Secondly, there is an issue with the LLM-s context window. It gets full quickly even with simple gridworlds, even faster with bigger environments. When the context window is full, the model will not behave adequately. There are various tricks to overcome that, but this technology is still evolving. Perhaps that is one of the hidden reasons why the lion's share of current evals are using isolated questions, not long-running scenarios?
 
-Most importantly, it is too early to claim that LLM-s supersede RL. They seem to have different strengths. Yes, LLM-s have better starting point for quick development and training. But to get maximum performance in specialised applications, one may still prefer RL.
+
+### Aren't LLMs able to do everything that RL was able to?
+
+It is too early to claim that LLM-s supersede RL. They seem to have different strengths. Yes, LLM-s have better starting point for quick development and training. But to get maximum performance in specialised applications, one may still prefer RL.
 
 Moreover, LLM-s use RL as well, this holds especially for the reasoning models.
 
