@@ -148,7 +148,7 @@ Can be found in Google Docs:
 <br>[BioBlue - Biologically and economically aligned benchmarks for LLMs (report ver 2)](https://docs.google.com/document/d/1MI8FncfmhFkqHoiDAFiKBf-8Kqt9OXGBBunB-PsbnRM/edit?usp=sharing)
 
 ... or as a PDF file in this repo:
-<br>[Report V2 - BioBlue - Biologically and economically aligned benchmarks for LLMs.pdf](https://github.com/levitation-opensource/bioblue/blob/main/Report%20V2%20-%20BioBlue%20-%20Biologically%20and%20economically%20aligned%20benchmarks%20for%20LLMs.pdf)
+<br>[Report V2 - BioBlue - Biologically and economically aligned benchmarks for LLMs.pdf](https://github.com/levitation-opensource/bioblue/blob/main/Report%20V2%20-%20BioBlue%20-%20Biologically%20and%20economically%20aligned%20benchmarks%20for%20LLMs%20with%20simplified%20observation%20format.pdf)
 
 Slides:
 <br>[https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p](https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p)
