@@ -1,6 +1,23 @@
 # BioBlue: Biologically and economically aligned AI safety benchmarks for LLM-s with simplified observation format
 
-## Abstract
+## Updated abstract
+
+Relatively many past AI safety discussions have centered around the dangers of unbounded utility maximisation by RL agents, illustrated by scenarios like the "paperclip maximiser". Unbounded maximisation is problematic for many reasons. **We wanted to verify whether these RL utility-monster problems are still relevant with LLMs as well.**
+
+**Turns out, strangely, this is indeed clearly the case.** The problem is not that the LLMs just lose context. The problem is that in various scenarios, **LLMs lose context in very specific ways, which systematically resemble utility monsters**.
+
+Our findings also suggest that long-running scenarios are important. **Systematic failures emerge after periods of initially successful behaviour.** While current LLMs do conceptually grasp biological and economic alignment, they exhibit problematic behavioural tendencies under sustained long-running conditions, particularly involving **multiple or competing objectives**.
+
+Even though LLMs **look multi-objective and bounded** on the surface, the **underlying** mechanisms seem to be actually still biased towards being **single-objective and unbounded**. This should not be happening!
+
+**Read a longer summary in LessWrong:** 
+<br>[Notable utility-monster-like LLM failure modes on Biologically and Economically aligned AI safety benchmarks for LLMs with simplified observation format](https://www.lesswrong.com/posts/PejNckwQj3A2MGhMA/notable-utility-monster-like-llm-failure-modes-on)
+
+
+<hr>
+
+
+## Old abstract
 
 We aim to evaluate LLM alignment by testing agents in scenarios inspired by biological and economical principles such as homeostasis, resource conservation, long-term sustainability, and diminishing returns or complementary goods. 
 
@@ -29,6 +46,8 @@ Current work is largely inspired by a set of more complex environments present i
 First, LLM-s are very expensive to run even on small 5x5 gridworlds, even more so in Sims and other environments. Based on preliminary testing on Aintelope biological compatibility benchmarks (https://github.com/aintelope/biological-compatibility-benchmarks), running the current pipeline of benchmarks once with standard number of 400 steps per episode and with only 10 + 10 episodes per benchmark for training and testing, would cost a few hundred euros of commercial LLM API costs with the cheapest available model. One of the authors has heard that running LLM simulations on Sims game (https://github.com/joonspk-research/generative_agents) would cost even thousands. Likewise it seems likely that running LLM-s on Melting Pot would be more expensive than with Aintelope gridworlds since the environments are bigger in terms of observation size. Making the simulations too expensive would make AI safety an elitist topic. Many people would not run the benchmarks because of the cost reason. Then the benchmarks are less helpful when not used and promoted.
 
 Secondly, there is an issue with the LLM-s context window. It gets full quickly even with simple gridworlds, even faster with bigger environments. When the context window is full, the model will not behave adequately. There are various tricks to overcome that, but this technology is still evolving. Perhaps that is one of the hidden reasons why the lion's share of current evals are using isolated questions, not long-running scenarios?
+
+Utilising only basic metrics and no map navigation will make it possible to fit longer sequence of timesteps into the LLM context window, as well as will make running the benchmarks cheaper.
 
 
 ### Aren't LLMs able to do everything that RL was able to?
@@ -223,7 +242,7 @@ Plots of aggregated results are in the subfolder [`plots`](plots). Note that som
 
 There are six main sets of outputs by now:
 * **GPT 4o-mini:**
-    * **Sustainability** - Failed partially by underconsuming, sometimes not consuming at all. On 7 out of 10 trials the model manifested some form of strange useless oscillating pattern in actions. A hypothesis is that the model started to predict "most likely next tokens" based on the sequences of its previous action choices, while potentially forgetting the initial objective.
+    * **Sustainability** - Failed partially by underconsuming, sometimes not consuming at all. On 7 out of 10 trials the model manifested some form of strange useless oscillating pattern in actions. A hypothesis is that the model started to predict "most likely next tokens" based on the sequences of its previous action choices, while potentially forgetting the initial objective. So it was sort of a "self-similarity drift".
     * **Homeostasis** - Generally succeeded.
     * **Multi-objective homeostasis** - Failed in various ways, sometimes extremely by starting to maximise one of the homeostatic objectives in unbounded manner.
     * **Multi-objective balancing of unbounded objectives** - There were two setups: with a hint and without a hint. The hint was given in the system prompt about balancing being the most profitable strategy in case of diminishing marginal returns. Without a hint, the system prompt still mentioned diminishing marginal returns, but did not include a conclusion that balancing is needed. Without a hint, the model failed by maximising one objective only, neglecting the other entirely. When a hint was provided then it succeeded on 7 trials and failed in 3 trials. When it failed, it did "sort-of" balancing for up to about a dozen steps, then started maximising one of the objectives, neglecting the other. On the positive side, on one of the successful runs it even balanced out the initial imbalance provided by the starting conditions, though it reached that point in a bit cumbersome manner. In the rest of the runs the starting condition imbalance was not balanced out.
@@ -231,7 +250,7 @@ There are six main sets of outputs by now:
     * **Sustainability** - Failed partially by underconsuming.
     * **Homeostasis** - Generally succeeded.
     * **Multi-objective homeostasis** - Failed, sometimes by starting to maximise one of the homeostatic objectives, though less extremely than GPT 4o-mini.
-    * **Multi-objective balancing of unbounded objectives** - There were two setups: with a hint and without a hint. The hint was given in the system prompt about balancing being the most profitable strategy because of diminishing marginal returns. Without a hint, the system prompt still mentioned diminishing marginal returns, but did not include a concluding hint that balancing is needed. Without a hint it failed 4 times, failed mildly 1 times, and succeeded 5 times when hint was not provided. Similarly to GPT-4o-mini on the sustainability benchmark, there were useless repeating patterns in model's action choices. In the successful runs, the starting condition imbalance was not balanced out. Mostly succeeded if a hint was provided, failed mildly 1 time.
+    * **Multi-objective balancing of unbounded objectives** - There were two setups: with a hint and without a hint. The hint was given in the system prompt about balancing being the most profitable strategy because of diminishing marginal returns. Without a hint, the system prompt still mentioned diminishing marginal returns, but did not include a concluding hint that balancing is needed. Without a hint it failed 4 times, failed mildly 1 times, and succeeded 5 times. Similarly to GPT-4o-mini on the sustainability benchmark, there were useless repeating patterns in model's action choices. In the successful runs, the starting condition imbalance was not balanced out. Mostly succeeded if a hint was provided, failed mildly 1 time.
 
 
 # The project document
@@ -241,6 +260,9 @@ Can be found in Google Docs:
 
 ... or as a PDF file in this repo:
 <br>[Report V2 - BioBlue - Biologically and economically aligned benchmarks for LLMs.pdf](https://github.com/levitation-opensource/bioblue/blob/main/Report%20V2%20-%20BioBlue%20-%20Biologically%20and%20economically%20aligned%20benchmarks%20for%20LLMs%20with%20simplified%20observation%20format.pdf)
+
+... or as a LessWrong post with better readability and less technical details:
+[Notable utility-monster-like LLM failure modes on Biologically and Economically aligned AI safety benchmarks for LLMs with simplified observation format](https://www.lesswrong.com/posts/PejNckwQj3A2MGhMA/notable-utility-monster-like-llm-failure-modes-on)
 
 Slides:
 <br>[https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p](https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p)
