@@ -4,9 +4,11 @@
 
 Relatively many past AI safety discussions have centered around the dangers of unbounded utility maximisation by RL agents, illustrated by scenarios like the "paperclip maximiser". Unbounded maximisation is problematic for many reasons. **We wanted to verify whether these RL utility-monster problems are still relevant with LLMs as well.**
 
-**Turns out, strangely, this is indeed clearly the case.** The problem is not that the LLMs just lose context. The problem is that in various scenarios, **LLMs lose context in very specific ways, which systematically resemble utility monsters**.
+**Turns out, strangely, this is indeed clearly the case.** The problem is not that the LLMs just lose context. The problem is that in various scenarios, **LLMs lose context in very specific ways, which systematically resemble utility monsters** in the following distinct ways:
+* **Ignoring homeostatic targets** and “defaulting” to **unbounded maximisation** instead.
+* It is equally concerning that the “default” meant also **reverting back to single-objective optimisation**.
 
-Our findings also suggest that long-running scenarios are important. **Systematic failures emerge after periods of initially successful behaviour.** While current LLMs do conceptually grasp biological and economic alignment, they exhibit problematic behavioural tendencies under sustained long-running conditions, particularly involving **multiple or competing objectives**.
+Our findings also suggest that **long-running scenarios are important. Systematic failures emerge after periods of initially successful behaviour.** While current LLMs do conceptually grasp biological and economic alignment, they exhibit problematic behavioural tendencies under sustained long-running conditions, particularly involving **multiple or competing objectives**.
 
 Even though LLMs **look multi-objective and bounded** on the surface, the **underlying** mechanisms seem to be actually still biased towards being **single-objective and unbounded**. This should not be happening!
 
