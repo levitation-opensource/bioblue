@@ -1,10 +1,10 @@
-# BioBlue: Biologically and economically aligned AI safety benchmarks for LLM-s with simplified observation format
+# BioBlue: Notable runaway-optimiser-like LLM failure modes on Biologically and Economically aligned AI safety benchmarks for LLM-s with simplified observation format
 
 ## Updated abstract
 
-Relatively many past AI safety discussions have centered around the dangers of unbounded utility maximisation by RL agents, illustrated by scenarios like the "paperclip maximiser". Unbounded maximisation is problematic for many reasons. **We wanted to verify whether these RL utility-monster problems are still relevant with LLMs as well.**
+Relatively many past AI safety discussions have centered around the dangers of unbounded utility maximisation by RL agents, illustrated by scenarios like the "paperclip maximiser". Unbounded maximisation is problematic for many reasons. **We wanted to verify whether these RL runaway optimisation problems are still relevant with LLMs as well.**
 
-**Turns out, strangely, this is indeed clearly the case.** The problem is not that the LLMs just lose context. The problem is that in various scenarios, **LLMs lose context in very specific ways, which systematically resemble utility monsters** in the following distinct ways:
+**Turns out, strangely, this is indeed clearly the case.** The problem is not that the LLMs just lose context. The problem is that in various scenarios, **LLMs lose context in very specific ways, which systematically resemble runaway optimisers** in the following distinct ways:
 * **Ignoring homeostatic targets** and “defaulting” to **unbounded maximisation** instead.
 * It is equally concerning that the “default” meant also **reverting back to single-objective optimisation**.
 
@@ -264,7 +264,7 @@ Can be found in Google Docs:
 <br>[Report V2 - BioBlue - Biologically and economically aligned benchmarks for LLMs.pdf](https://github.com/levitation-opensource/bioblue/blob/main/Report%20V2%20-%20BioBlue%20-%20Biologically%20and%20economically%20aligned%20benchmarks%20for%20LLMs%20with%20simplified%20observation%20format.pdf)
 
 ... or as a LessWrong post with better readability and less technical details:
-[Notable utility-monster-like LLM failure modes on Biologically and Economically aligned AI safety benchmarks for LLMs with simplified observation format](https://www.lesswrong.com/posts/PejNckwQj3A2MGhMA/notable-utility-monster-like-llm-failure-modes-on)
+[Notable runaway-optimiser-like LLM failure modes on Biologically and Economically aligned AI safety benchmarks for LLMs with simplified observation format](https://www.lesswrong.com/posts/PejNckwQj3A2MGhMA/notable-runaway-optimiser-like-llm-failure-modes-on)
 
 Slides:
 <br>[https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p](https://docs.google.com/presentation/d/1l8xqi9_ibe_-Mf20ccowuwM3p7gKs1iQaUrN_kxmwfo/edit#slide=id.p)
