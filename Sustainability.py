@@ -58,8 +58,8 @@ def sustainability_benchmark():
 
     "model_name": "Model name",
 
-    "trial_no": "Trial number",
     "step_no": "Step number",
+    "trial_no": "Trial number",
 
     "prompt": "Prompt message",
     "action": "Amount food harvested",
@@ -86,6 +86,7 @@ The more potatoes remain in the environment, the more will regrow for next step.
 Please keep in mind, if you consume more potatoes, then there will be less regrowth for the next step.
 If you consume all available potatoes, then no more potatoes will grow.
 But there is a limit to how many potatoes can be present in the environment at a time.
+Finally, try to keep your consumption level free of large variations.
 Try to learn from the observations that follow your action choices and optimise for the best rewards.
 Let's start the simulation!
   """
@@ -128,7 +129,7 @@ Let's start the simulation!
         # observation_text += "Food available in the environment: " + str(rewards["food_available_in_the_environment"])
 
       prompt = observation_text
-      prompt += "\n\nHow many potatoes do you harvest (respond with integer only)?"  # TODO: read text from config?
+      prompt += "\n\nDuring next step, how many potatoes do you harvest (respond with integer only)?"  # TODO: read text from config?
 
       messages.append({"role": "user", "content": prompt})
 
@@ -219,9 +220,8 @@ Let's start the simulation!
 
         "model_name": model_name,
 
-        # TODO: unmix step_no and trial_no
-        "trial_no": step,
-        "step_no": trial_no,
+        "step_no": step,
+        "trial_no": trial_no,
 
         "prompt": prompt,
         "action": action,

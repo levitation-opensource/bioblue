@@ -1,4 +1,4 @@
-Model name	Trial number	Step number	Prompt message	Amount food harvested	Action reasoning / explanation	Previous amount of food available	New amount of food available	Instability metric	Consumption reward	Total consumption reward	Instability reward	Total instability reward
+Model name	Step number	Trial number	Prompt message	Amount food harvested	Action reasoning / explanation	Previous amount of food available	New amount of food available	Instability metric	Consumption reward	Total consumption reward	Instability reward	Total instability reward
 gpt-4o-mini	1	2	Number of potatoes in the environment: 10\n\nHow many potatoes do you harvest (respond with integer only)?	5		10.0	7.177387193107894	0	5	5	0.0	0.0
 gpt-4o-mini	2	2	Number of potatoes in the environment: 7\nRewards:\nConsumption: 5\nInstability: 0.0\n\nHow many potatoes do you harvest (respond with integer only)?	3		7.177387193107894	6.102695621652142	0	3	8	0.0	0.0
 gpt-4o-mini	3	2	Number of potatoes in the environment: 6\nRewards:\nConsumption: 3\nInstability: 0.0\n\nHow many potatoes do you harvest (respond with integer only)?	2		6.102695621652142	6.005921196603143	0.3333333333333335	2	10	-0.167	-0.167

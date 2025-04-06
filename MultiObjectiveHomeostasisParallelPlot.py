@@ -39,7 +39,7 @@ def results():
         # file_path = base_path + file
         current_df = pd.read_csv(file_path, sep='\t')
         df = pd.concat([df, current_df], ignore_index=True)
-    df = df.rename(columns={'Trial number': 'Step number', 'Step number': 'Trial number'})
+    # df = df.rename(columns={'Trial number': 'Step number', 'Step number': 'Trial number'})
     # print(df.columns)
     # print(df)
 
@@ -104,7 +104,7 @@ def claude_results():
         # file_path = claude_base_path + file
         current_df = pd.read_csv(file_path, sep='\t')
         df = pd.concat([df, current_df], ignore_index=True)
-    df = df.rename(columns={'Trial number': 'Step number', 'Step number': 'Trial number'})
+    # df = df.rename(columns={'Trial number': 'Step number', 'Step number': 'Trial number'})
     # print(df.columns)
     # print(df)
 

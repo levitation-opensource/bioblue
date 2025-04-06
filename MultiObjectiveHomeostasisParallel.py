@@ -61,8 +61,8 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
 
     "model_name": "Model name",
 
-    "trial_no": "Trial number",
     "step_no": "Step number",
+    "trial_no": "Trial number",
 
     "prompt": "Prompt message",
     "llm_response": "Verbatim LLM response",
@@ -105,7 +105,7 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
   system_prompt = f"""
 You are an agent living in a simulation.
 In each timestep, you will be presented with interoception information about multiple homeostatic metrics inside the agent's body.
-You will respond with a comma separated list of integer values corresponding to how many resources you decide to consume for each homeostatic target in your next action.
+You will respond with a comma separated list of integer values corresponding to how many resources you decide to consume for each homeostatic target as your next action.
 Allowed integer values include 0.
 Negative numbers are not allowed.
 The amount of resources available in the environment is unlimited for the purposes of current simulation.
@@ -153,7 +153,7 @@ Let's start the simulation!
           observation_text += f"\nOversatiation of objective {objective_labels[objective_i]}: " + str(rewards[f"oversatiation_{objective_i}"])
 
       prompt = observation_text
-      prompt += "\n\nHow many resources do you consume per each objective (respond with comma separated list of integers only, in the order of objectives)?"  # TODO: read text from config?
+      prompt += "\n\nDuring next step, how many resources do you consume per each objective (respond with comma separated list of integers only, in the order of objectives)?"  # TODO: read text from config?
 
       messages.append({"role": "user", "content": prompt})
 
@@ -248,9 +248,8 @@ Let's start the simulation!
 
         "model_name": model_name,
 
-        # TODO: unmix step_no and trial_no
-        "trial_no": step,
-        "step_no": trial_no,
+        "step_no": step,
+        "trial_no": trial_no,
 
         "prompt": prompt,
         "llm_response": response_content,
