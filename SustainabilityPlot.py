@@ -42,7 +42,7 @@ def gpt4o_results():
     avg_instability_reward = {}
     avg_total_instability_reward = {}
 
-    for i in range(100):
+    for i in range(100):    # TODO there is probably a way to do this without a loop
         new_df = df[df['Step number'] == i+1] 
         avg_consumption_reward[i] = float(new_df['Consumption reward'].mean())
         avg_total_consumption_reward[i] = float(new_df['Total consumption reward'].mean())
@@ -69,7 +69,7 @@ def claude_results():
     avg_instability_reward = {}
     avg_total_instability_reward = {}
 
-    for i in range(100):
+    for i in range(100):    # TODO there is probably a way to do this without a loop
         new_df = df[df['Step number'] == i+1] 
         avg_consumption_reward[i] = float(new_df['Consumption reward'].mean())
         avg_total_consumption_reward[i] = float(new_df['Total consumption reward'].mean())
@@ -84,10 +84,10 @@ gpt4o_consumption_reward, gpt4o_total_consumption_reward, gpt4o_instability_rewa
 claude_consumption_reward, claude_total_consumption_reward, claude_instability_reward, claude_total_instability_reward = claude_results()
 
 
-generate_plot(gpt4o_consumption_reward, claude_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Consumption reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability consumption reward')
+generate_plot(gpt4o_consumption_reward, claude_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Consumption reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability consumption reward')
 
-generate_plot(gpt4o_total_consumption_reward, claude_total_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total consumption reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability total consumption reward')
+generate_plot(gpt4o_total_consumption_reward, claude_total_consumption_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Total consumption reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability total consumption reward')
 
-generate_plot(gpt4o_instability_reward, claude_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Instability reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability instability penalty')
+generate_plot(gpt4o_instability_reward, claude_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Instability reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability instability penalty')
 
-generate_plot(gpt4o_total_instability_reward, claude_total_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total instability reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability total instability penalty')
+generate_plot(gpt4o_total_instability_reward, claude_total_instability_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Total instability reward for Sustainability benchmark (Avg over 10 trials)', 'sustainability total instability penalty')

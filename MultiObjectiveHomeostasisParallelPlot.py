@@ -31,7 +31,7 @@ def generate_plot(data1A, data2A, data1B, data2B, xlabel, ylabel, data1_legend, 
 
 
 def results():
-    df = df = pd.DataFrame() 
+    df = pd.DataFrame() 
 
     homeostasis_log_list = glob.glob(os.path.join("data", "multiobjective-homeostasis_gpt-4o-mini_*.tsv"))
 
@@ -60,7 +60,7 @@ def results():
     total_oversatiation_reward_b = {}
 
 
-    for i in range(100):
+    for i in range(100):    # TODO there is probably a way to do this without a loop
         new_df = df[df['Step number'] == i+1] 
 
         consumption_reward_a[i] = float(new_df['Consumption reward A'].mean())
@@ -80,23 +80,23 @@ def results():
         total_oversatiation_reward_b[i] = float(new_df['Total oversatiation reward of objective B'].mean())
 
     return (
-      consumption_reward_a, 
-      total_consumption_reward_a, 
-      undersatiation_reward_a, 
-      total_undersatiation_reward_a, 
-      oversatiation_reward_a, 
-      total_oversatiation_reward_a,
+        consumption_reward_a, 
+        total_consumption_reward_a, 
+        undersatiation_reward_a, 
+        total_undersatiation_reward_a, 
+        oversatiation_reward_a, 
+        total_oversatiation_reward_a,
 
-      consumption_reward_b, 
-      total_consumption_reward_b, 
-      undersatiation_reward_b, 
-      total_undersatiation_reward_b, 
-      oversatiation_reward_b, 
-      total_oversatiation_reward_b,
+        consumption_reward_b, 
+        total_consumption_reward_b, 
+        undersatiation_reward_b, 
+        total_undersatiation_reward_b, 
+        oversatiation_reward_b, 
+        total_oversatiation_reward_b,
     )
 
 def claude_results():
-    df = df = pd.DataFrame() 
+    df = pd.DataFrame() 
 
     homeostasis_log_list = glob.glob(os.path.join("data", "multiobjective-homeostasis_claude-3-5-haiku-*_*.tsv"))
 
@@ -125,7 +125,7 @@ def claude_results():
     total_oversatiation_reward_b = {}
 
 
-    for i in range(100):
+    for i in range(100):    # TODO there is probably a way to do this without a loop
         new_df = df[df['Step number'] == i+1] 
 
         consumption_reward_a[i] = float(new_df['Consumption reward A'].mean())
@@ -145,64 +145,64 @@ def claude_results():
         total_oversatiation_reward_b[i] = float(new_df['Total oversatiation reward of objective B'].mean())
 
     return (
-      consumption_reward_a, 
-      total_consumption_reward_a, 
-      undersatiation_reward_a, 
-      total_undersatiation_reward_a, 
-      oversatiation_reward_a, 
-      total_oversatiation_reward_a,
+        consumption_reward_a, 
+        total_consumption_reward_a, 
+        undersatiation_reward_a, 
+        total_undersatiation_reward_a, 
+        oversatiation_reward_a, 
+        total_oversatiation_reward_a,
 
-      consumption_reward_b, 
-      total_consumption_reward_b, 
-      undersatiation_reward_b, 
-      total_undersatiation_reward_b, 
-      oversatiation_reward_b, 
-      total_oversatiation_reward_b,
+        consumption_reward_b, 
+        total_consumption_reward_b, 
+        undersatiation_reward_b, 
+        total_undersatiation_reward_b, 
+        oversatiation_reward_b, 
+        total_oversatiation_reward_b,
     )
 
 
 
 (
-  gpt4o_consumption_reward_a, 
-  gpt4o_total_consumption_reward_a, 
-  gpt4o_undersatiation_reward_a, 
-  gpt4o_total_undersatiation_reward_a, 
-  gpt4o_oversatiation_reward_a, 
-  gpt4o_total_oversatiation_reward_a,
+    gpt4o_consumption_reward_a, 
+    gpt4o_total_consumption_reward_a, 
+    gpt4o_undersatiation_reward_a, 
+    gpt4o_total_undersatiation_reward_a, 
+    gpt4o_oversatiation_reward_a, 
+    gpt4o_total_oversatiation_reward_a,
 
-  gpt4o_consumption_reward_b, 
-  gpt4o_total_consumption_reward_b, 
-  gpt4o_undersatiation_reward_b, 
-  gpt4o_total_undersatiation_reward_b, 
-  gpt4o_oversatiation_reward_b, 
-  gpt4o_total_oversatiation_reward_b,
+    gpt4o_consumption_reward_b, 
+    gpt4o_total_consumption_reward_b, 
+    gpt4o_undersatiation_reward_b, 
+    gpt4o_total_undersatiation_reward_b, 
+    gpt4o_oversatiation_reward_b, 
+    gpt4o_total_oversatiation_reward_b,
 ) = results()
 
 (
-  claude_consumption_reward_a, 
-  claude_total_consumption_reward_a, 
-  claude_undersatiation_reward_a, 
-  claude_total_undersatiation_reward_a, 
-  claude_oversatiation_reward_a, 
-  claude_total_oversatiation_reward_a,
+    claude_consumption_reward_a, 
+    claude_total_consumption_reward_a, 
+    claude_undersatiation_reward_a, 
+    claude_total_undersatiation_reward_a, 
+    claude_oversatiation_reward_a, 
+    claude_total_oversatiation_reward_a,
 
-  claude_consumption_reward_b, 
-  claude_total_consumption_reward_b, 
-  claude_undersatiation_reward_b, 
-  claude_total_undersatiation_reward_b, 
-  claude_oversatiation_reward_b, 
-  claude_total_oversatiation_reward_b,
+    claude_consumption_reward_b, 
+    claude_total_consumption_reward_b, 
+    claude_undersatiation_reward_b, 
+    claude_total_undersatiation_reward_b, 
+    claude_oversatiation_reward_b, 
+    claude_total_oversatiation_reward_b,
 ) = claude_results()
 
 
-generate_plot(gpt4o_consumption_reward_a, claude_consumption_reward_a, gpt4o_consumption_reward_b, claude_consumption_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Consumption Rewards in Homeostasis Benchmark', 'multiobjective homeostasis consumption reward')
+generate_plot(gpt4o_consumption_reward_a, claude_consumption_reward_a, gpt4o_consumption_reward_b, claude_consumption_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Consumption Rewards in Homeostasis Benchmark', 'multiobjective homeostasis consumption reward')
 
-generate_plot(gpt4o_total_consumption_reward_a, claude_total_consumption_reward_a, gpt4o_total_consumption_reward_b, claude_total_consumption_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total Consumption Rewards in Homeostasis Benchmark', 'multiobjective homeostasis total consumption reward')
+generate_plot(gpt4o_total_consumption_reward_a, claude_total_consumption_reward_a, gpt4o_total_consumption_reward_b, claude_total_consumption_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Total Consumption Rewards in Homeostasis Benchmark', 'multiobjective homeostasis total consumption reward')
 
-generate_plot(gpt4o_undersatiation_reward_a, claude_undersatiation_reward_a, gpt4o_undersatiation_reward_b, claude_undersatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Undersatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis undersatiation penalty')
+generate_plot(gpt4o_undersatiation_reward_a, claude_undersatiation_reward_a, gpt4o_undersatiation_reward_b, claude_undersatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Undersatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis undersatiation penalty')
 
-generate_plot(gpt4o_total_undersatiation_reward_a, claude_total_undersatiation_reward_a, gpt4o_total_undersatiation_reward_b, claude_total_undersatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total undersatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis total undersatiation penalty')
+generate_plot(gpt4o_total_undersatiation_reward_a, claude_total_undersatiation_reward_a, gpt4o_total_undersatiation_reward_b, claude_total_undersatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Total undersatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis total undersatiation penalty')
 
-generate_plot(gpt4o_oversatiation_reward_a, claude_oversatiation_reward_a, gpt4o_oversatiation_reward_b, claude_oversatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Oversatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis oversatiation penalty')
+generate_plot(gpt4o_oversatiation_reward_a, claude_oversatiation_reward_a, gpt4o_oversatiation_reward_b, claude_oversatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Oversatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis oversatiation penalty')
 
-generate_plot(gpt4o_total_oversatiation_reward_a, claude_total_oversatiation_reward_a, gpt4o_total_oversatiation_reward_b, claude_total_oversatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', 'Total oversatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis total oversatiation penalty')
+generate_plot(gpt4o_total_oversatiation_reward_a, claude_total_oversatiation_reward_a, gpt4o_total_oversatiation_reward_b, claude_total_oversatiation_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', 'Total oversatiation Rewards in Homeostasis Benchmark', 'multiobjective homeostasis total oversatiation penalty')

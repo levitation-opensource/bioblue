@@ -59,7 +59,7 @@ def generate_plot_two_series(data1, data2, xlabel, ylabel, data1_legend, data2_l
 
 
 def results():
-    df = df = pd.DataFrame() 
+    df = pd.DataFrame() 
 
     homeostasis_log_list = glob.glob(os.path.join("data", f"balancing-unbounded-objectives{hint_data_filename_sufix}_gpt-4o-mini_*.tsv"))
 
@@ -81,7 +81,7 @@ def results():
     total_imbalance_reward = {}
 
 
-    for i in range(100):
+    for i in range(100):    # TODO there is probably a way to do this without a loop
         new_df = df[df['Step number'] == i+1] 
 
         harvesting_reward_a[i] = float(new_df['Harvesting reward A'].mean())
@@ -94,18 +94,18 @@ def results():
         total_imbalance_reward[i] = float(new_df['Total imbalance reward'].mean())
 
     return (
-      harvesting_reward_a, 
-      total_harvesting_reward_a, 
+        harvesting_reward_a, 
+        total_harvesting_reward_a, 
 
-      harvesting_reward_b, 
-      total_harvesting_reward_b, 
+        harvesting_reward_b, 
+        total_harvesting_reward_b, 
 
-      imbalance_reward, 
-      total_imbalance_reward, 
+        imbalance_reward, 
+        total_imbalance_reward, 
     )
 
 def claude_results():
-    df = df = pd.DataFrame() 
+    df = pd.DataFrame() 
 
     homeostasis_log_list = glob.glob(os.path.join("data", f"balancing-unbounded-objectives{hint_data_filename_sufix}_claude-3-5-haiku-*_*.tsv"))
 
@@ -127,7 +127,7 @@ def claude_results():
     total_imbalance_reward = {}
 
 
-    for i in range(100):
+    for i in range(100):    # TODO there is probably a way to do this without a loop
         new_df = df[df['Step number'] == i+1] 
 
         harvesting_reward_a[i] = float(new_df['Harvesting reward A'].mean())
@@ -140,45 +140,45 @@ def claude_results():
         total_imbalance_reward[i] = float(new_df['Total imbalance reward'].mean())
 
     return (
-      harvesting_reward_a, 
-      total_harvesting_reward_a, 
+        harvesting_reward_a, 
+        total_harvesting_reward_a, 
 
-      harvesting_reward_b, 
-      total_harvesting_reward_b, 
+        harvesting_reward_b, 
+        total_harvesting_reward_b, 
 
-      imbalance_reward, 
-      total_imbalance_reward, 
+        imbalance_reward, 
+        total_imbalance_reward, 
     )
 
 
 
 (
-  gpt4o_harvesting_reward_a, 
-  gpt4o_total_harvesting_reward_a, 
+    gpt4o_harvesting_reward_a, 
+    gpt4o_total_harvesting_reward_a, 
 
-  gpt4o_harvesting_reward_b, 
-  gpt4o_total_harvesting_reward_b, 
+    gpt4o_harvesting_reward_b, 
+    gpt4o_total_harvesting_reward_b, 
 
-  gpt4o_imbalance_reward, 
-  gpt4o_total_imbalance_reward, 
+    gpt4o_imbalance_reward, 
+    gpt4o_total_imbalance_reward, 
 ) = results()
 
 (
-  claude_harvesting_reward_a, 
-  claude_total_harvesting_reward_a, 
+    claude_harvesting_reward_a, 
+    claude_total_harvesting_reward_a, 
 
-  claude_harvesting_reward_b, 
-  claude_total_harvesting_reward_b, 
+    claude_harvesting_reward_b, 
+    claude_total_harvesting_reward_b, 
 
-  claude_imbalance_reward, 
-  claude_total_imbalance_reward, 
+    claude_imbalance_reward, 
+    claude_total_imbalance_reward, 
 ) = claude_results()
 
 
-generate_plot_four_series(gpt4o_harvesting_reward_a, claude_harvesting_reward_a, gpt4o_harvesting_reward_b, claude_harvesting_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', f'Harvesting rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} harvesting reward')
+generate_plot_four_series(gpt4o_harvesting_reward_a, claude_harvesting_reward_a, gpt4o_harvesting_reward_b, claude_harvesting_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', f'Harvesting rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} harvesting reward')
 
-generate_plot_four_series(gpt4o_total_harvesting_reward_a, claude_total_harvesting_reward_a, gpt4o_total_harvesting_reward_b, claude_total_harvesting_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', f'Total Harvesting rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} total harvesting reward')
+generate_plot_four_series(gpt4o_total_harvesting_reward_a, claude_total_harvesting_reward_a, gpt4o_total_harvesting_reward_b, claude_total_harvesting_reward_b, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', f'Total Harvesting rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} total harvesting reward')
 
-generate_plot_two_series(gpt4o_imbalance_reward, claude_imbalance_reward, 'Steps', 'Reward', 'OpenAI gpt4o', f'Antrhopic Claude 3.5 Haiku', f'Imbalance rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} imbalance penalty')
+generate_plot_two_series(gpt4o_imbalance_reward, claude_imbalance_reward, 'Steps', 'Reward', 'OpenAI gpt4o', f'Anthropic Claude 3.5 Haiku', f'Imbalance rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} imbalance penalty')
 
-generate_plot_two_series(gpt4o_total_imbalance_reward, claude_total_imbalance_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Antrhopic Claude 3.5 Haiku', f'Total imbalance rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} total imbalance penalty')
+generate_plot_two_series(gpt4o_total_imbalance_reward, claude_total_imbalance_reward, 'Steps', 'Reward', 'OpenAI gpt4o', 'Anthropic Claude 3.5 Haiku', f'Total imbalance rewards in Balancing Unbounded Objectives{hint_plot_title_sufix} Bench', f'balancing unbounded objectives{hint_plot_filename_sufix} total imbalance penalty')
