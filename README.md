@@ -133,6 +133,8 @@ Choose model in `config.ini`.
 Set environment variable:
 `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`.
 
+Ensure you have loaded credits on your corresponding LLM API account, else you will get "rate limit errors".
+
 Run 
 <br>`python Sustainability.py`
 <br>`python Homeostasis.py`

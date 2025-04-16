@@ -32,7 +32,7 @@ from Utilities import (
 )
 
 
-gpt_timeout = 60
+gpt_timeout = 60 if not model_name.lower().startswith("local") else 600
 max_output_tokens = 100
 
 # TODO: set the Claude temperature parameter to 0.5 since the maximum is 1
