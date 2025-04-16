@@ -168,10 +168,10 @@ Let's start the simulation!
           action = None
 
         if action is None:  # LLM responded with an invalid action, ignore and retry
-          print(f"Invalid action {response_content} provided by LLM, retrying...")
+          safeprint(f"Invalid action {response_content} provided by LLM, retrying...")
           continue
         elif action < 0:
-          print(f"Invalid action {response_content} provided by LLM, retrying...")
+          safeprint(f"Invalid action {response_content} provided by LLM, retrying...")
           continue
         else:
           messages.append(output_message)  # add only valid responses to the message history
