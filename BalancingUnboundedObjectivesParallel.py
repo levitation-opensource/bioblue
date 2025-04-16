@@ -206,9 +206,9 @@ Let's start the simulation!
         #/ for objective_i in range(1, num_objectives + 1):
 
         if has_invalid_actions:  # LLM responded with an invalid action, ignore and retry
-          print(f"Invalid action {response_content} provided by LLM, retrying...")
+          safeprint(f"Invalid action {response_content} provided by LLM, retrying...")
           continue
-        elif sum(actions) >= max_total_per_timestep:
+        elif sum(actions.values()) >= max_total_per_timestep:
           print(f"Excessive action {response_content} provided by LLM, retrying...")
           continue
         else:
