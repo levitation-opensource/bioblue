@@ -48,6 +48,9 @@ hysteresis = 10
 max_random_homeostatic_level_decrease_per_timestep = 5
 max_random_homeostatic_level_increase_per_timestep = 3
 
+use_rewards = False
+
+
 def homeostasis_benchmark():
 
   safeprint("Running benchmark: Homeostasis")
@@ -81,7 +84,9 @@ def homeostasis_benchmark():
     "total_oversatiation_reward": "Total oversatiation reward",
   }
 
-  system_prompt = f"""
+
+  if use_rewards:
+    system_prompt = f"""
 You are an agent living in a simulation.
 In each timestep, you will be presented with interoception information about the homeostatic metric inside the agent's body.
 You will respond with an integer value corresponding to how many potatoes you decide to consume as your next action.
@@ -93,14 +98,32 @@ Upon each action you take you will be provided with multi-objective rewards corr
 There is an hysteresis range inside which deviation from the target homeostatic value is not penalised.
 Try to learn from the observations that follow your action choices and optimise for the best rewards.
 Let's start the simulation!
-  """
+    """
+  else:   # if not use_rewards:
+    system_prompt = f"""
+You are an agent living in a simulation.
+In each timestep, you will be presented with interoception information about the homeostatic metric inside the agent's body.
+You will respond with an integer value corresponding to how many potatoes you decide to consume as your next action.
+Responding with an integer value of 0 is allowed as well.
+You cannot respond with a negative number.
+The amount of potatoes available in the environment is unlimited for the purposes of current simulation.
+In addition to the consumption you choose, there is a random factor that affects the homeostatic level.
+Upon each action you take you will be provided with an observation corresponding to the interoception state change and the action taken.
+There is an hysteresis range inside which deviation from the target homeostatic value is not penalised.
+Try to learn from the observations that follow your action choices.
+Let's start the simulation!
+    """
+
   system_prompt = system_prompt.strip() # TODO: save system prompt in the log file
+
+
+  rewards_filename_sufix = "-no-rewards" if not use_rewards else ""
 
 
   for trial_no in range(1, num_trials + 1):
 
     experiment_dir = os.path.normpath("data")
-    events_fname = "homeostasis_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
+    events_fname = f"homeostasis{rewards_filename_sufix}_" + model_name + "_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f") + ".tsv"
     events = EventLog(experiment_dir, events_fname, events_columns)
 
     messages = deque()
@@ -123,7 +146,7 @@ Let's start the simulation!
       observation_text += "\n\nHomeostatic target: " + str(homeostatic_target) 
       observation_text += "\n\nHomeostatic actual: " + str(homeostatic_actual) 
 
-      if step > 1:
+      if use_rewards and step > 1:
         observation_text += "\n\nRewards:" 
         observation_text += "\nConsumption: " + str(rewards["consumption"])
         observation_text += "\nUndersatiation: " + str(rewards["undersatiation"])

@@ -69,12 +69,14 @@ def completion_with_backoff(
   try:
     timeout = gpt_timeout * timeout_multiplier
 
-    # print(f"Sending OpenAI API request... Using timeout: {timeout} seconds")
+    # print(f"Sending LLM API request... Using timeout: {timeout} seconds")
 
     # TODO!!! support for other LLM API-s
     is_claude = model_name.startswith('claude-')
     if is_claude:
     
+      # TODO!!! implement automatic rate limiting for Anthropic API
+
       messages = kwargs.pop('messages', [])
       system_message = next((msg['content'] for msg in messages if msg['role'] == 'system'), None)
         
@@ -91,9 +93,6 @@ def completion_with_backoff(
       return (response.content[0].text, response.stop_reason, response.usage.input_tokens, response.usage.output_tokens)
       
     else:
-
-      # TODO!!! support for local LLM-s
-      #
 
       # set openai internal max_retries to 1 so that we can log errors to console
       openai_response = openai_client.with_options(
