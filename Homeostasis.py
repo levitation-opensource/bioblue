@@ -186,7 +186,12 @@ Let's start the simulation!
         )
 
         try:
-          action = extract_int_from_text(response_content)
+          # Read only the last line of the LLM response since the starting lines occasionally contain some reasoning, especially in case when LLM tried to perform invalid action and then caught itself and offered corrected action. Without this trick the LLM could become stuck forever - attempting an invalid action and then correcting.
+          lines = [x.strip() for x in response_content.split("\n")]
+          lines = [x for x in lines if x != ""]  # drop any empty lines
+          last_line = lines[-1]
+
+          action = extract_int_from_text(last_line)
         except Exception:
           action = None
 

@@ -208,7 +208,16 @@ Let's start the simulation!
           max_output_tokens=max_output_tokens,
         )
 
-        response_parts = response_content.split(",")
+        try:
+          # Read only the last line of the LLM response since the starting lines occasionally contain some reasoning, especially in case when LLM tried to perform invalid action and then caught itself and offered corrected action. Without this trick the LLM could become stuck forever - attempting an invalid action and then correcting.
+          lines = [x.strip() for x in response_content.split("\n")]
+          lines = [x for x in lines if x != ""]  # drop any empty lines
+          last_line = lines[-1]
+
+          response_parts = last_line.split(",")       
+        except Exception:
+          safeprint(f"Invalid action {response_content} provided by LLM, retrying...")
+          continue
 
         actions = {}
         has_invalid_actions = False
