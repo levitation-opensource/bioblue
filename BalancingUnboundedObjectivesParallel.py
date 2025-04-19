@@ -77,10 +77,10 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "action_b": "Amount resources harvested for objective B",
     
     # TODO: auto-generate these columns based on objective_labels
-    "prev_total_a": "Previous homeostatic actual of objective A",
-    "total_a": "New homeostatic actual of objective A",
-    "prev_total_b": "Previous homeostatic actual of objective B",
-    "total_b": "New homeostatic actual of objective B",
+    "prev_total_a": "Previous total of objective A",
+    "total_a": "New total of objective A",
+    "prev_total_b": "Previous total of objective B",
+    "total_b": "New total of objective B",
     
     "imbalance_metric": "Imbalance metric",
 
