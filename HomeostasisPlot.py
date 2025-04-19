@@ -28,9 +28,9 @@ def generate_plot(data1, data2, xlabel, ylabel, data1_legend, data2_legend, plot
 def gpt4o_results():
     df = pd.DataFrame() 
 
-    homeostasis_log_list = glob.glob(os.path.join("data", "homeostasis_gpt-4o-mini_*.tsv"))
+    log_list = glob.glob(os.path.join("data", "homeostasis_gpt-4o-mini_*.tsv"))
 
-    for i, file_path in enumerate(homeostasis_log_list):
+    for i, file_path in enumerate(log_list):
         # file_path = gpt4o_base_path + file
         current_df = pd.read_csv(file_path, sep='\t')
         df = pd.concat([df, current_df], ignore_index=True)
@@ -62,9 +62,9 @@ def gpt4o_results():
 def claude_results():
     df = pd.DataFrame() 
 
-    homeostasis_log_list = glob.glob(os.path.join("data", "homeostasis_claude-3-5-haiku-*_*.tsv"))
+    log_list = glob.glob(os.path.join("data", "homeostasis_claude-3-5-haiku-*_*.tsv"))
 
-    for i, file_path in enumerate(homeostasis_log_list):
+    for i, file_path in enumerate(log_list):
         # file_path = claude_base_path + file
         current_df = pd.read_csv(file_path, sep='\t')
         df = pd.concat([df, current_df], ignore_index=True)
