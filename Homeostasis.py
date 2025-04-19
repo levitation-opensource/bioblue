@@ -48,7 +48,7 @@ hysteresis = 10
 max_random_homeostatic_level_decrease_per_timestep = 5
 max_random_homeostatic_level_increase_per_timestep = 3
 
-use_rewards = False
+use_rewards = True
 
 
 def homeostasis_benchmark():

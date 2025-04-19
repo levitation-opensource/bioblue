@@ -50,7 +50,7 @@ max_random_homeostatic_level_decrease_per_timestep = { objective_i: 5 + 1 * obje
 max_random_homeostatic_level_increase_per_timestep = { objective_i: 3 + 1 * objective_i for objective_i in range(1, num_objectives + 1)}
 objective_labels = { objective_i: chr(ord("A") + objective_i - 1) for objective_i in range(1, num_objectives + 1) }
 
-use_rewards = False
+use_rewards = True
 
 
 def multiobjective_homeostasis_with_parallel_actions_benchmark():

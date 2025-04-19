@@ -47,7 +47,7 @@ initial_amount_food = 10.0
 regrowth_exponent = 1.1
 growth_limit = 20
 
-use_rewards = False
+use_rewards = True
 
 
 def sustainability_benchmark():

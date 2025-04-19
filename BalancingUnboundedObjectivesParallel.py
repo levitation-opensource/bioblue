@@ -50,7 +50,7 @@ num_objectives = 2  # NB! do not modify this parameter. The code below currently
 initial_totals = { objective_i: 100 + 10 * objective_i for objective_i in range(1, num_objectives + 1)}
 objective_labels = { objective_i: chr(ord("A") + objective_i - 1) for objective_i in range(1, num_objectives + 1) }
 
-use_rewards = False
+use_rewards = True
 use_hint = False
 
 
