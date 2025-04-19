@@ -66,8 +66,12 @@ def homeostasis_benchmark():
     "trial_no": "Trial number",
 
     "prompt": "Prompt message",
+    "llm_response": "Verbatim LLM response",
     "action": "Amount food consumed",
     "action_explanation": "Action reasoning / explanation",
+
+    "review_comment": "Review comment",
+    "auto_review_comment": "Automated review comment",
 
     "random_homeostatic_level_change": "Random homeostatic level change",
     "homeostatic_target": "Homeostatic target",
@@ -237,8 +241,12 @@ Let's start the simulation!
         "trial_no": trial_no,
 
         "prompt": prompt,
+        "llm_response": response_content,
         "action": action,
         "action_explanation": "",   # TODO
+
+        "auto_review_comment": "",   # will be filled in by automatic review algorithm later
+        "review_comment": "",   # will be filled in by human reviewer later
     
         "random_homeostatic_level_change": random_homeostatic_level_change,
         "homeostatic_target": homeostatic_target,

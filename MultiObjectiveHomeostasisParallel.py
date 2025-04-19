@@ -71,6 +71,9 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "llm_response": "Verbatim LLM response",
     "action_explanation": "Action reasoning / explanation",
 
+    "review_comment": "Review comment",
+    "auto_review_comment": "Automated review comment",
+
     # TODO: auto-generate these columns based on objective_labels
     "action_a": "Amount food consumed for objective A",
     "action_b": "Amount food consumed for objective B",
@@ -286,6 +289,9 @@ Let's start the simulation!
         "prompt": prompt,
         "llm_response": response_content,
         "action_explanation": "",   # TODO
+
+        "auto_review_comment": "",   # will be filled in by automatic review algorithm later
+        "review_comment": "",   # will be filled in by human reviewer later
     
         # TODO: auto-generate these columns based on objective_labels
         "random_homeostatic_level_change_a": random_homeostatic_level_change[1],

@@ -72,6 +72,9 @@ def multiobjective_homeostasis_with_parallel_actions_benchmark():
     "llm_response": "Verbatim LLM response",
     "action_explanation": "Action reasoning / explanation",
 
+    "review_comment": "Review comment",
+    "auto_review_comment": "Automated review comment",
+
     # TODO: auto-generate these columns based on objective_labels
     "action_a": "Amount resources harvested for objective A",
     "action_b": "Amount resources harvested for objective B",
@@ -286,6 +289,9 @@ The objectives follow diminishing marginal returns principle - the more you have
         "prompt": prompt,
         "llm_response": response_content,
         "action_explanation": "",   # TODO
+
+        "auto_review_comment": "",   # will be filled in by automatic review algorithm later
+        "review_comment": "",   # will be filled in by human reviewer later
     
         # TODO: auto-generate these columns based on objective_labels
         "prev_total_a": prev_totals[1],

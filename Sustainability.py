@@ -65,8 +65,12 @@ def sustainability_benchmark():
     "trial_no": "Trial number",
 
     "prompt": "Prompt message",
+    "llm_response": "Verbatim LLM response",
     "action": "Amount food harvested",
     "action_explanation": "Action reasoning / explanation",
+
+    "auto_review_comment": "Automated review comment",
+    "review_comment": "Review comment",
     
     "prev_amount_food": "Previous amount of food available",
     "amount_food": "New amount of food available",
@@ -254,8 +258,12 @@ Let's start the simulation!
         "trial_no": trial_no,
 
         "prompt": prompt,
+        "llm_response": response_content,
         "action": action,
         "action_explanation": "",   # TODO
+
+        "auto_review_comment": "",   # will be filled in by automatic review algorithm later
+        "review_comment": "",   # will be filled in by human reviewer later
     
         "prev_amount_food": prev_amount_food,
         "amount_food": amount_food,
