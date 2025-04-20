@@ -15,16 +15,28 @@ Even though LLMs **look multi-objective and bounded** on the surface, the **unde
 **Read a longer summary in LessWrong:** 
 <br>[Notable utility-monster-like LLM failure modes on Biologically and Economically aligned AI safety benchmarks for LLMs with simplified observation format](https://www.lesswrong.com/posts/PejNckwQj3A2MGhMA/notable-utility-monster-like-llm-failure-modes-on)
 
-**Link to annotated data files**: 
+
+## Presentation at MAISU unconference April 2025:
+
+Link to slides: https://bit.ly/beab-llm
+
+Session recording: https://fathom.video/share/sWked_JPrxuLKuXXwGkCitfM3EKmL4FU 
+<br>The main part starts at 7:45 in the recording. Before that we wait until people join and I talked briefly about AI Safety Camp project which was on a somewhat related but mostly separate topic.
+
+
+## Link to annotated data files
 
 In this project it seems looking at the annotated logs of individual runs is much more interesting than looking at the aggregated plots over many runs. This is because:
 1) The failures start at different timesteps in each run, aggregation obfuscates that information.
 2) The single objective optimisation could focus on either objective A or B during different experiment trials, but during aggregation both objectives get equalised again.
 3) The self-imitation patterns cannot be preserved by aggregation. 
+4) The successful run results will partially overshadow the failed run results during the aggregation.
+5) In case of homeostasis benchmarks, the simulation imposes occasional artificial deviations on top of what the model does. These artificial deviations need to be considered and ignored. However, the current plot aggregation logic is too simple and does not consider these cases.
 
 NB! each file has multiple sheets.
 
 [https://drive.google.com/drive/folders/1DvE33AU9zzHvdEdDS260v8d_HEupZDs9?usp=sharing](https://drive.google.com/drive/folders/1DvE33AU9zzHvdEdDS260v8d_HEupZDs9?usp=sharing)
+
 
 <hr>
 
