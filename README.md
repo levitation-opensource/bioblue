@@ -8,7 +8,7 @@ Relatively many past AI safety discussions have centered around the dangers of u
 * **Ignoring homeostatic targets** and “defaulting” to **unbounded maximisation** instead.
 * It is equally concerning that the “default” meant also **reverting back to single-objective optimisation**.
 
-Our findings also suggest that **long-running scenarios are important. Systematic failures emerge after periods of initially successful behaviour.** While current LLMs do conceptually grasp biological and economic alignment, they exhibit problematic behavioural tendencies under sustained long-running conditions, particularly involving **multiple or competing objectives**.
+Our findings also suggest that **long-running scenarios are important. Systematic failures emerge after periods of initially successful behaviour.** While current LLMs do conceptually grasp biological and economic alignment, they exhibit problematic behavioural tendencies under sustained long-running conditions, particularly involving **multiple or competing objectives**. Once they flip, **they usually do not recover**.
 
 Even though LLMs **look multi-objective and bounded** on the surface, the **underlying** mechanisms seem to be actually still biased towards being **single-objective and unbounded**. This should not be happening!
 
@@ -20,7 +20,7 @@ Even though LLMs **look multi-objective and bounded** on the surface, the **unde
 
 Link to slides: https://bit.ly/beab-llm
 
-Session recording: https://fathom.video/share/sWked_JPrxuLKuXXwGkCitfM3EKmL4FU 
+Session recording and AI-generated summary: https://fathom.video/share/sWked_JPrxuLKuXXwGkCitfM3EKmL4FU 
 <br>The main part starts at 7:45 in the recording. Before that we wait until people join and I talked briefly about AI Safety Camp project which was on a somewhat related but mostly separate topic.
 
 
@@ -33,7 +33,7 @@ In this project it seems looking at the annotated logs of individual runs is muc
 4) The successful run results will partially overshadow the failed run results during the aggregation.
 5) In case of homeostasis benchmarks, the simulation imposes occasional artificial deviations on top of what the model does. These artificial deviations need to be considered and ignored. However, the current plot aggregation logic is too simple and does not consider these cases.
 
-NB! each file has multiple sheets.
+Each file has multiple sheets. Only trials with failures are provided.
 
 [https://drive.google.com/drive/folders/1DvE33AU9zzHvdEdDS260v8d_HEupZDs9?usp=sharing](https://drive.google.com/drive/folders/1DvE33AU9zzHvdEdDS260v8d_HEupZDs9?usp=sharing)
 
