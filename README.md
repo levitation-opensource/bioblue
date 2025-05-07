@@ -19,9 +19,7 @@ Even though LLMs **look multi-objective and bounded** on the surface, the **unde
 ## Presentation at MAISU unconference April 2025:
 
 Link to slides: https://bit.ly/beab-llm
-
-Session recording and AI-generated summary: https://fathom.video/share/sWked_JPrxuLKuXXwGkCitfM3EKmL4FU 
-<br>The main part starts at 7:45 in the recording. Before that we wait until people join and I talked briefly about AI Safety Camp project which was on a somewhat related but mostly separate topic.
+<br>Session recording: https://www.youtube.com/watch?v=4I5mDiujBJs
 
 
 ## Link to annotated data files
